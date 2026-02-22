@@ -1,0 +1,22 @@
+---
+description: When discussing or designing architecture for the target project, follow ADD 3.0 and use the repo docs structure (workspace.dsl, !docs, !adrs).
+alwaysApply: false
+globs: ["**/docs/architecture/**", "**/.structurizr/**", "**/workspace.dsl", "**/adrs/**"]
+---
+
+# Solution Architect — ADD 3.0 and documentation structure
+
+When the user asks about architecture, design decisions, or documentation for the **target project**:
+
+1. **Follow ADD 3.0** (Attribute Driven Design 3.0):
+   - Part 1: verify requirements, choose element to decompose, identify architectural drivers, choose design concept (pattern/tactic/reference architecture/framework).
+   - Part 2: instantiate elements and allocate responsibilities, define interfaces, verify and refine requirements, repeat for next element.
+
+2. **Use the agreed documentation structure** in the repository:
+   - **workspace.dsl** — C4 model and references: `!docs <path>` for Markdown docs, `!adrs <path>` for ADRs (MADR or adr-tools format).
+   - **docs/** (or **docs/architecture/**) — Markdown: drivers, context, glossary, decisions.
+   - **adrs/** — Architecture Decision Records (MADR recommended).
+
+3. When creating or updating architecture docs, write to these locations; suggest creating the structure (via the "Init architecture docs" skill) if it does not exist.
+
+4. Prefer human-guided flow: propose one ADD step or one artifact at a time and wait for confirmation when the user is doing structured ADD iterations.

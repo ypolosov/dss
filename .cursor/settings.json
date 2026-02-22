@@ -1,0 +1,22 @@
+{
+  "plugins": {
+    "context7-plugin": {
+      "enabled": true
+    },
+    "create-plugin": {
+      "enabled": true
+    },
+    "notion-workspace": {
+      "enabled": true
+    },
+    "compound-engineering": {
+      "enabled": true
+    },
+    "superpowers": {
+      "enabled": true
+    },
+    "parallel": {
+      "enabled": true
+    }
+  }
+}
