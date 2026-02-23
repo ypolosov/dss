@@ -1,8 +1,8 @@
 {
   "configuration" : {
-    "scope" : "Landscape"
+    "scope" : "SoftwareSystem"
   },
-  "description" : "Architecture documentation and C4 model.",
+  "description" : "Architecture documentation and C4 model. Source: Business Architecture (Confluence G). L1/L2 from PlantUML.",
   "documentation" : {
     "decisions" : [ {
       "content" : "# 1. Use Structurizr DSL and ADD 3.0 for architecture docs\n\n## Status\n\nAccepted\n\n## Context\n\nWe need a single source of truth for architecture and decisions in the repo.\n\n## Decision\n\nWe use Structurizr DSL (C4) with !docs and !adrs, and follow ADD 3.0 for design steps.\n\n## Consequences\n\n- Diagrams and docs live in the repo; Structurizr vNext (local/export) for viewing.\n- ADRs in MADR format for compatibility with Structurizr importers.\n",
@@ -11,43 +11,1221 @@
       "id" : "1",
       "status" : "accepted",
       "title" : "1. Use Structurizr DSL and ADD 3.0 for architecture docs"
+    }, {
+      "content" : "# 2. Platform stack and technical constraints\n\n## Status\n\nAccepted\n\n## Context\n\nThe platform must deliver MVP in 1 year, reduce development cost and time (use of ready-made services), and align with team skills and market availability of developers. Regulatory and integration requirements (payments, games, KYC/AML, fraud) must be met.\n\n## Decision\n\n- **Runtime:** Node.js. **Language:** TypeScript/JavaScript.\n- **Backend:** Nest.js for API and microservices.\n- **Frontend:** Next.js (B2C and SSR); Refine for operator and platform back-office.\n- **Data:** PostgreSQL (ACID, source of truth), TypeORM; Redis for caching.\n- **API style:** REST + SSE for platform and tenant APIs.\n- **DevOps:** Jenkins (CI); Digital Ocean (dev), AWS (prod); Cloudflare (DNS/CDN). Monorepo in Bitbucket.\n- **Integrations:** Seon (fraud), Praxis (payments), Softswiss (games), SendGrid (notifications), LiveChat (support), Google Analytics. HashiCorp Vault for secrets; Payload for CMS.\n\n## Consequences\n\n- Backend and frontend are JavaScript/TypeScript; team can share types and tooling.\n- Nest.js and Next.js provide structure and speed for MVP; Refine accelerates back-office UIs.\n- PostgreSQL and Redis are well-understood; integration layer must abstract external providers (payments, games, KYC/AML).\n- Regulatory and multi-tenant concerns (data isolation, reporting, licensing) must be designed into the architecture from the start.\n",
+      "date" : "2026-02-23T06:39:38Z",
+      "format" : "Markdown",
+      "id" : "2",
+      "status" : "accepted",
+      "title" : "2. Platform stack and technical constraints"
     } ],
     "sections" : [ {
-      "content" : "# Architecture overview\n\n(To be filled during ADD 3.0 iterations.)\n\n## Drivers\n\n- **Functional:** —\n- **Quality attributes:** —\n- **Constraints:** —\n",
+      "content" : "# Architecture overview\n\nB2B2C SaaS gambling platform that enables **B2B tenants** (gambling Operators) to efficiently manage and deploy **B2C online Casinos** under unique Brands. The platform is scalable, secure, and customizable; it aims to enhance user engagement, ensure regulatory compliance, and provide advanced analytics. By reducing IT costs, enabling quick market entry, and offering tailored user experiences, it helps Operators increase revenue and profitability.\n\n**MVP target: 1 year.**\n\n**Source of truth:** [Business Architecture](https://veryuniquename.atlassian.net/wiki/spaces/G/pages/229834764/Business+Architecture) (Confluence, space G — GromTech). This repo reflects that content for ADD 3.0 and C4.\n\n## Drivers (summary)\n\n- **Functional:** Multi-tenant platform for Operators to manage and deploy B2C casinos; per-tenant branding; operator and tenant management; deployment and configuration of casino instances; user engagement, regulatory compliance, advanced analytics; integrations (games, payments, KYC/AML, fraud, affiliates).\n- **Quality attributes:** Scalability (multi-tenant, many brands/casinos); security (payments, PII, gambling compliance); customizability per tenant/brand; reliability and availability for gambling operations; regulatory compliance (jurisdictions, licensing, responsible gambling).\n- **Constraints:** MVP in 1 year; B2B2C and multi-tenant model; regulated gambling markets; competitive market (time-to-market, cost efficiency); stack and integrations fixed (see [01-requirements.md](01-requirements.md) and [ADR 0002](../adrs/0002-platform-stack-and-constraints.md)).\n\n## Decomposition focus\n\nFirst element to decompose: **Gambling Platform** (whole product). Target first-level containers from Business Architecture: **Platform Infrastructure**, **Operator Tenant**, **Casino** (see [02-decomposition.md](02-decomposition.md)).\n",
       "filename" : "00-overview.md",
       "format" : "Markdown",
       "order" : 1,
       "title" : ""
+    }, {
+      "content" : "# Requirements and drivers (from Business Architecture)\n\nThis document reflects the **Drivers/Goals/Objectives**, **Constraints**, and **Assumptions** from [Business Architecture](https://veryuniquename.atlassian.net/wiki/spaces/G/pages/229834764/Business+Architecture). Used for ADD 3.0 Part 1 (requirements, drivers, design concepts).\n\n---\n\n## Drivers / Goals / Objectives\n\n| Driver | Goal | Key objectives |\n|--------|------|----------------|\n| Растущий интерес к онлайн-гемблингу | 5% рынков, на которые мы хотим войти | — |\n| Меняющиеся регуляторные требования | Поддержка 15+ стран/регионов к концу 1-го года | Сформировать юридическую команду по 5 ключевым регионам за 12 месяцев |\n| Опыт инвестора в Trading и Affiliate-бизнесе | Создать партнерскую программу | Внедрить аналитику поведения игроков за 12 мес.; привлечь 100+ активных партнеров-аффилиатов к концу года |\n| Сеть потенциальных инвесторов | Привлечь $20M за 24 месяца с сохранением 51%+ доли основателей | Инвестиционный план с KPI за 3 мес.; прозрачная система управления с ежемесячной отчетностью через 3 мес. после MVP |\n| Распространение интернета и мобильных устройств | Поддержка 50+ способов оплаты | 95% покрытие рынков за 3 мес.; время от инициации способа оплаты до прода &lt; 1 мес.; депозиты &lt; 30 сек.; каскадинг до MVP |\n| Появление новых типов игр | Поддержка 10+ категорий игр с выводом новых | Универсальное API для интеграции за 3 мес.; подключение игрового провайдера за 1 день; A/B-тестирование геймификации за 12 мес. |\n| Доступность готовых сервисов (KYC, AML) | Сократить разработку MVP на 50% и расходы на 40% (запуск за 12 мес.) | Выбрать решения для 8 ключевых компонентов; унифицированный интеграционный слой |\n| Высокая маржинальность гемблинга | Маржа 30%, потери от сбоев &lt; 0,5% | Доступность 99,9% в первый год; автоматизация восстановления 90% типовых ошибок; раннее обнаружение аномалий до MVP |\n| Запрос на прозрачные легальные решения | Сертификация 1 лицензии каждые 6 месяцев | Документация для сертификации за 3 мес.; отчетность регулятору; минимально достаточный уровень для аудитов |\n| Разделение ответственности B2B/B2C | Распределить 100% регуляторных рисков за год | Зоны ответственности за 6 мес.; разделение данных между уровнями; типовые договоры |\n| Разнообразие глобальных рынков | Выход на региональные рынки | Модульная архитектура под разные рынки за MVP; библиотека регуляторных шаблонов (новый рынок за 1 мес.); мультиязычность и мультивалютность |\n\n---\n\n## Constraints (stack and integrations)\n\n| Area | Choice |\n|------|--------|\n| **Runtime** | Node.js |\n| **Language** | TypeScript / JavaScript |\n| **Backend** | Nest.js (API, microservices) |\n| **Frontend** | Next.js, Refine (operator/platform UIs) |\n| **DevOps** | Jenkins (CI), Digital Ocean (dev), AWS (prod), Cloudflare (DNS/CDN) |\n| **Repo** | Bitbucket (monorepo) |\n| **API** | REST + SSE |\n| **Database** | PostgreSQL (ACID), TypeORM |\n| **Caching** | Redis |\n| **Integrations** | Seon (fraud), Praxis (payments), Softswiss (games), SendGrid (notifications), LiveChat (support), Google Analytics |\n| **Secrets** | HashiCorp Vault |\n| **CMS** | Payload |\n\n---\n\n## Assumptions (load and SLA)\n\n| Parameter | Value |\n|-----------|--------|\n| Total Operators | 100 |\n| Daily active Operators | 50% |\n| Online casinos per Operator | 10 |\n| Total End-users per casino | 100,000 |\n| Daily active End-users | 20% |\n| Requests peak ratio | 300% |\n\n**SLA (summary):** Uptime 99.9% (web apps) / 99.95% (APIs); API response &lt; 200 ms (p95); critical transactions &lt; 100 ms; page load &lt; 3 s; support 24/7, critical response &lt; 1 h.\n\nFull SLAs per application (Brand, Back-office Operator/Platform, APIs, CI/CD, Monitoring) are in Business Architecture.\n",
+      "filename" : "01-requirements.md",
+      "format" : "Markdown",
+      "order" : 2,
+      "title" : ""
+    }, {
+      "content" : "# Decomposition (ADD)\n\n**Element to decompose:** Gambling Platform (software system).\n\n**Source:** [Business Architecture — Systems Levels](https://veryuniquename.atlassian.net/wiki/spaces/G/pages/229834764/Business+Architecture).\n\n---\n\n## First-level decomposition (containers)\n\nThe platform is decomposed into three main containers:\n\n| Container | Responsibility |\n|-----------|----------------|\n| **Platform Infrastructure** | Shared platform: Gateway, CI/CD, Platform CRM, Events bus, IAM, Reports. Container Registry, Secrets, Configuration, Observability, platform instance environment. |\n| **Operator Tenant** | Per-tenant backoffice: Gateway, Operator CRM, Events bus, IAM, Reports. One logical tenant per Operator. |\n| **Casino** | Per-brand B2C: Gateway, Brand (front), IAM, CMS, Events bus; integrations (Games, Payments, AML, KYC, Affiliations, Fraud detection). One logical casino per Brand. |\n\n**Relationships (conceptual):**\n\n- Platform Infrastructure hosts and operates Operator Tenants.\n- Operator Tenant hosts and operates Casinos.\n- **Platform Owner** manages Platform Infrastructure (and thus tenants).\n- **Operator** manages Operator Tenant and its Casinos.\n- **Player** (end-user) uses Casino.\n\n---\n\n## Value streams (reference)\n\n- **Platform Development:** Plan → Develop → Test → Release → Deploy → Operate → Maintain.\n- **Platform Operations (White Label / Turnkey):** Browse platform, manage staff, integrations, deploy tenant, onboard operator, deploy casino, operate, reports, analytics.\n- **B2B (White Label / Turnkey):** Operator manages tenant, game/payment providers, casinos, players, deposits/withdrawals, KYC/AML, complaints, promos/bonuses, support, compliance, reports, analytics.\n- **B2C:** Player browses casino, onboard, select game, play, deposit/withdraw, profile, responsible gambling, promotions, support.\n\nDetailed stages and capabilities are in Business Architecture (Value Streams, Business Capabilities).\n\n---\n\n## Next ADD steps\n\n- **Part 2.2:** Define interfaces between Platform Infrastructure ↔ Operator Tenant ↔ Casino.\n- **Part 2.3:** Verify and refine requirements (constraints per container).\n- **Part 2.4:** Choose next element to decompose (e.g. Platform Infrastructure, Operator Tenant, or Casino) and repeat.\n",
+      "filename" : "02-decomposition.md",
+      "format" : "Markdown",
+      "order" : 3,
+      "title" : ""
     } ]
   },
   "id" : 1,
-  "lastModifiedDate" : "2026-02-23T06:02:30Z",
+  "lastModifiedDate" : "2026-02-23T07:06:47Z",
   "model" : {
     "people" : [ {
-      "description" : "End user",
+      "description" : "Manages platform.",
       "id" : "1",
-      "name" : "User",
+      "name" : "Platform Admin",
       "properties" : {
-        "structurizr.dsl.identifier" : "user"
+        "structurizr.dsl.identifier" : "platformAdmin"
+      },
+      "relationships" : [ {
+        "description" : "Manages",
+        "destinationId" : "24",
+        "id" : "117",
+        "sourceId" : "1",
+        "tags" : "Relationship",
+        "technology" : "Web Browser"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "description" : "Platform staff.",
+      "id" : "2",
+      "name" : "Platform Employee",
+      "properties" : {
+        "structurizr.dsl.identifier" : "platformEmployee"
+      },
+      "relationships" : [ {
+        "description" : "Manages",
+        "destinationId" : "24",
+        "id" : "118",
+        "sourceId" : "2",
+        "tags" : "Relationship",
+        "technology" : "Web Browser"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "description" : "Manages operator tenant.",
+      "id" : "3",
+      "name" : "Operator Admin",
+      "properties" : {
+        "structurizr.dsl.identifier" : "operatorAdmin"
+      },
+      "relationships" : [ {
+        "description" : "Manages",
+        "destinationId" : "24",
+        "id" : "120",
+        "sourceId" : "3",
+        "tags" : "Relationship",
+        "technology" : "Web Browser"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "description" : "Operator staff.",
+      "id" : "4",
+      "name" : "Operator Employee",
+      "properties" : {
+        "structurizr.dsl.identifier" : "operatorEmployee"
+      },
+      "relationships" : [ {
+        "description" : "Manages",
+        "destinationId" : "24",
+        "id" : "121",
+        "sourceId" : "4",
+        "tags" : "Relationship",
+        "technology" : "Web Browser"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "description" : "End-user (B2C).",
+      "id" : "5",
+      "name" : "Player",
+      "properties" : {
+        "structurizr.dsl.identifier" : "player"
       },
       "relationships" : [ {
         "description" : "Uses",
-        "destinationId" : "2",
-        "id" : "3",
-        "sourceId" : "1",
+        "destinationId" : "24",
+        "id" : "122",
+        "sourceId" : "5",
+        "tags" : "Relationship",
+        "technology" : "Web Browser"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "description" : "Casino visitor.",
+      "id" : "6",
+      "name" : "Visitor",
+      "properties" : {
+        "structurizr.dsl.identifier" : "visitor"
+      },
+      "relationships" : [ {
+        "description" : "Uses",
+        "destinationId" : "24",
+        "id" : "123",
+        "sourceId" : "6",
+        "tags" : "Relationship",
+        "technology" : "Web Browser"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "description" : "Develops platform.",
+      "id" : "7",
+      "name" : "Developer",
+      "properties" : {
+        "structurizr.dsl.identifier" : "developer"
+      },
+      "relationships" : [ {
+        "description" : "Develops",
+        "destinationId" : "24",
+        "id" : "124",
+        "sourceId" : "7",
+        "tags" : "Relationship",
+        "technology" : "IDE"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "description" : "DevOps engineer.",
+      "id" : "8",
+      "name" : "DevOps",
+      "properties" : {
+        "structurizr.dsl.identifier" : "devops"
+      },
+      "relationships" : [ {
+        "description" : "Maintains",
+        "destinationId" : "24",
+        "id" : "125",
+        "sourceId" : "8",
+        "tags" : "Relationship",
+        "technology" : "CLI"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "description" : "UI/UX designer.",
+      "id" : "9",
+      "name" : "Designer",
+      "properties" : {
+        "structurizr.dsl.identifier" : "designer"
+      },
+      "relationships" : [ {
+        "description" : "Designs",
+        "destinationId" : "24",
+        "id" : "126",
+        "sourceId" : "9",
+        "tags" : "Relationship",
+        "technology" : "Design tools"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "description" : "QA engineer.",
+      "id" : "10",
+      "name" : "Tester",
+      "properties" : {
+        "structurizr.dsl.identifier" : "tester"
+      },
+      "relationships" : [ {
+        "description" : "Tests",
+        "destinationId" : "24",
+        "id" : "127",
+        "sourceId" : "10",
+        "tags" : "Relationship",
+        "technology" : "Test tools"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "description" : "Manages platform and tenants.",
+      "id" : "11",
+      "name" : "Platform Owner",
+      "properties" : {
+        "structurizr.dsl.identifier" : "platformOwner"
+      },
+      "relationships" : [ {
+        "description" : "Manages",
+        "destinationId" : "24",
+        "id" : "119",
+        "sourceId" : "11",
+        "tags" : "Relationship",
+        "technology" : "Web Browser"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "description" : "Gambling operator; manages tenant and casinos.",
+      "id" : "12",
+      "name" : "Operator",
+      "properties" : {
+        "structurizr.dsl.identifier" : "operator"
+      },
+      "relationships" : [ {
+        "description" : "Manages",
+        "destinationId" : "24",
+        "id" : "128",
+        "sourceId" : "12",
         "tags" : "Relationship",
         "technology" : "Web Browser"
       } ],
       "tags" : "Element,Person"
     } ],
     "softwareSystems" : [ {
-      "description" : "Placeholder; refine in ADD iterations.",
+      "description" : "External DNS and CDN.",
       "documentation" : { },
-      "id" : "2",
-      "name" : "Main System",
+      "id" : "13",
+      "name" : "DNS & CDN Provider API",
+      "properties" : {
+        "structurizr.dsl.identifier" : "extDns"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "description" : "External games provider.",
+      "documentation" : { },
+      "id" : "14",
+      "name" : "Games Provider API",
+      "properties" : {
+        "structurizr.dsl.identifier" : "extGames"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "description" : "External payments.",
+      "documentation" : { },
+      "id" : "15",
+      "name" : "Payments Provider API",
+      "properties" : {
+        "structurizr.dsl.identifier" : "extPay"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "description" : "External fraud detection.",
+      "documentation" : { },
+      "id" : "16",
+      "name" : "Fraud Detection Provider API",
+      "properties" : {
+        "structurizr.dsl.identifier" : "extFraud"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "description" : "External KYC.",
+      "documentation" : { },
+      "id" : "17",
+      "name" : "KYC Provider API",
+      "properties" : {
+        "structurizr.dsl.identifier" : "extKyc"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "description" : "External AML.",
+      "documentation" : { },
+      "id" : "18",
+      "name" : "AML Provider API",
+      "properties" : {
+        "structurizr.dsl.identifier" : "extAml"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "description" : "External customer support.",
+      "documentation" : { },
+      "id" : "19",
+      "name" : "Customer Support Provider API",
+      "properties" : {
+        "structurizr.dsl.identifier" : "extCs"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "description" : "Hashicorp Vault.",
+      "documentation" : { },
+      "id" : "20",
+      "name" : "Shared Secrets",
+      "properties" : {
+        "structurizr.dsl.identifier" : "extSecrets"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "description" : "Managed cloud registry.",
+      "documentation" : { },
+      "id" : "21",
+      "name" : "Container Registry",
+      "properties" : {
+        "structurizr.dsl.identifier" : "extContainerRegistry"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "description" : "Nexus.",
+      "documentation" : { },
+      "id" : "22",
+      "name" : "Registry",
+      "properties" : {
+        "structurizr.dsl.identifier" : "extRegistry"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "description" : "Grafana stack.",
+      "documentation" : { },
+      "id" : "23",
+      "name" : "Shared Observability",
+      "properties" : {
+        "structurizr.dsl.identifier" : "extObservability"
+      },
+      "tags" : "Element,Software System,External"
+    }, {
+      "containers" : [ {
+        "components" : [ {
+          "description" : "API gateway.",
+          "documentation" : { },
+          "id" : "26",
+          "name" : "Gateway",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platGateway"
+          },
+          "relationships" : [ {
+            "description" : "Routes",
+            "destinationId" : "27",
+            "id" : "45",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "28",
+            "id" : "46",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "29",
+            "id" : "47",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "30",
+            "id" : "48",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "31",
+            "id" : "49",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "SMTP"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "32",
+            "id" : "50",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "33",
+            "id" : "51",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "34",
+            "id" : "52",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "35",
+            "id" : "53",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "API"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "36",
+            "id" : "54",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "37",
+            "id" : "55",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "38",
+            "id" : "56",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "39",
+            "id" : "57",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "API"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "40",
+            "id" : "58",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "41",
+            "id" : "59",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "OTLP"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "44",
+            "id" : "60",
+            "sourceId" : "26",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Traefik"
+        }, {
+          "description" : "Event processing.",
+          "documentation" : { },
+          "id" : "27",
+          "name" : "Events",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platEvents"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Argo Events"
+        }, {
+          "description" : "CI pipelines.",
+          "documentation" : { },
+          "id" : "28",
+          "name" : "CI",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platCi"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Argo Workflows"
+        }, {
+          "description" : "CD automation.",
+          "documentation" : { },
+          "id" : "29",
+          "name" : "CD",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platCd"
+          },
+          "tags" : "Element,Component",
+          "technology" : "ArgoCD"
+        }, {
+          "description" : "Image updates.",
+          "documentation" : { },
+          "id" : "30",
+          "name" : "Image-updater",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platImageUpdater"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Argo Image Updater"
+        }, {
+          "description" : "Mail.",
+          "documentation" : { },
+          "id" : "31",
+          "name" : "SMTP",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platSmtp"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Mailu"
+        }, {
+          "description" : "Image processing.",
+          "documentation" : { },
+          "id" : "32",
+          "name" : "Images",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platImages"
+          },
+          "tags" : "Element,Component",
+          "technology" : "imgProxy"
+        }, {
+          "description" : "TLS certs.",
+          "documentation" : { },
+          "id" : "33",
+          "name" : "Certificates",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platCerts"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Cert-Manager"
+        }, {
+          "description" : "Feature flags.",
+          "documentation" : { },
+          "id" : "34",
+          "name" : "Configs",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platConfigs"
+          },
+          "tags" : "Element,Component",
+          "technology" : "OpenFeature"
+        }, {
+          "description" : "Secrets store.",
+          "documentation" : { },
+          "id" : "35",
+          "name" : "Secrets",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platSecrets"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Hashicorp Vault"
+        }, {
+          "description" : "Metrics collection.",
+          "documentation" : { },
+          "id" : "36",
+          "name" : "Metrics",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platMetrics"
+          },
+          "tags" : "Element,Component",
+          "technology" : "vmagent"
+        }, {
+          "description" : "Log aggregation.",
+          "documentation" : { },
+          "id" : "37",
+          "name" : "Logs",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platLogs"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Promtail"
+        }, {
+          "description" : "Distributed tracing.",
+          "documentation" : { },
+          "id" : "38",
+          "name" : "Traces",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platTraces"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Tempo"
+        }, {
+          "description" : "Error tracking.",
+          "documentation" : { },
+          "id" : "39",
+          "name" : "Errors",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platErrors"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Sentry"
+        }, {
+          "description" : "Profiling.",
+          "documentation" : { },
+          "id" : "40",
+          "name" : "Profiles",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platProfiles"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Grafana Alloy"
+        }, {
+          "description" : "OTel collector.",
+          "documentation" : { },
+          "id" : "41",
+          "name" : "Collector",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platCollector"
+          },
+          "tags" : "Element,Component",
+          "technology" : "OTel Collector"
+        }, {
+          "description" : "Sync to operator.",
+          "documentation" : { },
+          "id" : "42",
+          "name" : "Operator Integration",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platOperatorInt"
+          },
+          "tags" : "Element,Component",
+          "technology" : "MirrorMaker2"
+        }, {
+          "description" : "Sync to casino.",
+          "documentation" : { },
+          "id" : "43",
+          "name" : "Casino Integration",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platCasinoInt"
+          },
+          "tags" : "Element,Component",
+          "technology" : "MirrorMaker2"
+        }, {
+          "description" : "Message bus.",
+          "documentation" : { },
+          "id" : "44",
+          "name" : "Bus",
+          "properties" : {
+            "structurizr.dsl.identifier" : "platBus"
+          },
+          "relationships" : [ {
+            "description" : "Feeds",
+            "destinationId" : "42",
+            "id" : "61",
+            "sourceId" : "44",
+            "tags" : "Relationship",
+            "technology" : "Kafka"
+          }, {
+            "description" : "Feeds",
+            "destinationId" : "43",
+            "id" : "62",
+            "sourceId" : "44",
+            "tags" : "Relationship",
+            "technology" : "Kafka"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Kafka"
+        } ],
+        "description" : "Shared: Gateway, CI/CD, Platform CRM, Events bus, IAM, Reports.",
+        "documentation" : { },
+        "id" : "25",
+        "name" : "Platform Infrastructure",
+        "properties" : {
+          "structurizr.dsl.identifier" : "platformInfra"
+        },
+        "relationships" : [ {
+          "description" : "Hosts",
+          "destinationId" : "63",
+          "id" : "115",
+          "sourceId" : "25",
+          "tags" : "Relationship",
+          "technology" : "Platform API"
+        }, {
+          "description" : "Uses",
+          "destinationId" : "20",
+          "id" : "131",
+          "sourceId" : "25",
+          "tags" : "Relationship",
+          "technology" : "API"
+        }, {
+          "description" : "Uses",
+          "destinationId" : "21",
+          "id" : "133",
+          "sourceId" : "25",
+          "tags" : "Relationship",
+          "technology" : "API"
+        }, {
+          "description" : "Uses",
+          "destinationId" : "22",
+          "id" : "135",
+          "sourceId" : "25",
+          "tags" : "Relationship",
+          "technology" : "API"
+        }, {
+          "description" : "Uses",
+          "destinationId" : "23",
+          "id" : "137",
+          "sourceId" : "25",
+          "tags" : "Relationship",
+          "technology" : "API"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "Nest.js"
+      }, {
+        "components" : [ {
+          "description" : "API gateway.",
+          "documentation" : { },
+          "id" : "64",
+          "name" : "Gateway",
+          "properties" : {
+            "structurizr.dsl.identifier" : "opGateway"
+          },
+          "relationships" : [ {
+            "description" : "Routes",
+            "destinationId" : "65",
+            "id" : "70",
+            "sourceId" : "64",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "66",
+            "id" : "71",
+            "sourceId" : "64",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "67",
+            "id" : "72",
+            "sourceId" : "64",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "69",
+            "id" : "73",
+            "sourceId" : "64",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Traefik"
+        }, {
+          "description" : "Operator backoffice.",
+          "documentation" : { },
+          "id" : "65",
+          "name" : "CRM",
+          "properties" : {
+            "structurizr.dsl.identifier" : "opCrm"
+          },
+          "relationships" : [ {
+            "description" : "Uses",
+            "destinationId" : "67",
+            "id" : "74",
+            "sourceId" : "65",
+            "tags" : "Relationship",
+            "technology" : "API"
+          }, {
+            "description" : "Publishes",
+            "destinationId" : "69",
+            "id" : "75",
+            "sourceId" : "65",
+            "tags" : "Relationship",
+            "technology" : "Kafka"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Next.js, Nest.js"
+        }, {
+          "description" : "Reporting.",
+          "documentation" : { },
+          "id" : "66",
+          "name" : "Reports",
+          "properties" : {
+            "structurizr.dsl.identifier" : "opReports"
+          },
+          "relationships" : [ {
+            "description" : "Uses",
+            "destinationId" : "67",
+            "id" : "76",
+            "sourceId" : "66",
+            "tags" : "Relationship",
+            "technology" : "API"
+          }, {
+            "description" : "Publishes",
+            "destinationId" : "69",
+            "id" : "77",
+            "sourceId" : "66",
+            "tags" : "Relationship",
+            "technology" : "Kafka"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Nest.js"
+        }, {
+          "description" : "Identity and access.",
+          "documentation" : { },
+          "id" : "67",
+          "name" : "IAM",
+          "properties" : {
+            "structurizr.dsl.identifier" : "opIam"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Keycloak"
+        }, {
+          "description" : "Sync to casino.",
+          "documentation" : { },
+          "id" : "68",
+          "name" : "Casino Integration",
+          "properties" : {
+            "structurizr.dsl.identifier" : "opCasinoInt"
+          },
+          "tags" : "Element,Component",
+          "technology" : "MirrorMaker2"
+        }, {
+          "description" : "Message bus.",
+          "documentation" : { },
+          "id" : "69",
+          "name" : "Bus",
+          "properties" : {
+            "structurizr.dsl.identifier" : "opBus"
+          },
+          "relationships" : [ {
+            "description" : "Feeds",
+            "destinationId" : "68",
+            "id" : "78",
+            "sourceId" : "69",
+            "tags" : "Relationship",
+            "technology" : "Kafka"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Kafka"
+        } ],
+        "description" : "Per-tenant backoffice: Gateway, Operator CRM, Events bus, IAM, Reports.",
+        "documentation" : { },
+        "id" : "63",
+        "name" : "Operator Tenant",
+        "properties" : {
+          "structurizr.dsl.identifier" : "operatorTenant"
+        },
+        "relationships" : [ {
+          "description" : "Hosts",
+          "destinationId" : "79",
+          "id" : "116",
+          "sourceId" : "63",
+          "tags" : "Relationship",
+          "technology" : "Tenant API"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "Next.js, Refine"
+      }, {
+        "components" : [ {
+          "description" : "API gateway.",
+          "documentation" : { },
+          "id" : "80",
+          "name" : "Gateway",
+          "properties" : {
+            "structurizr.dsl.identifier" : "casGateway"
+          },
+          "relationships" : [ {
+            "description" : "Routes",
+            "destinationId" : "81",
+            "id" : "90",
+            "sourceId" : "80",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "82",
+            "id" : "91",
+            "sourceId" : "80",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "83",
+            "id" : "92",
+            "sourceId" : "80",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          }, {
+            "description" : "Routes",
+            "destinationId" : "84",
+            "id" : "93",
+            "sourceId" : "80",
+            "tags" : "Relationship",
+            "technology" : "HTTPS"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Traefik"
+        }, {
+          "description" : "B2C web app.",
+          "documentation" : { },
+          "id" : "81",
+          "name" : "Brand",
+          "properties" : {
+            "structurizr.dsl.identifier" : "casBrand"
+          },
+          "relationships" : [ {
+            "description" : "Publishes",
+            "destinationId" : "84",
+            "id" : "94",
+            "sourceId" : "81",
+            "tags" : "Relationship",
+            "technology" : "Kafka"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Next.js, Nest.js"
+        }, {
+          "description" : "Identity and sessions.",
+          "documentation" : { },
+          "id" : "82",
+          "name" : "IAM",
+          "properties" : {
+            "structurizr.dsl.identifier" : "casIam"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Keycloak"
+        }, {
+          "description" : "Content management.",
+          "documentation" : { },
+          "id" : "83",
+          "name" : "CMS",
+          "properties" : {
+            "structurizr.dsl.identifier" : "casCms"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Payload"
+        }, {
+          "description" : "Message bus.",
+          "documentation" : { },
+          "id" : "84",
+          "name" : "Bus",
+          "properties" : {
+            "structurizr.dsl.identifier" : "casBus"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Kafka"
+        }, {
+          "description" : "KYC provider integration.",
+          "documentation" : { },
+          "id" : "85",
+          "name" : "KYC Integration",
+          "properties" : {
+            "structurizr.dsl.identifier" : "casKyc"
+          },
+          "relationships" : [ {
+            "description" : "Publishes",
+            "destinationId" : "84",
+            "id" : "95",
+            "sourceId" : "85",
+            "tags" : "Relationship",
+            "technology" : "Kafka"
+          }, {
+            "description" : "Uses",
+            "destinationId" : "17",
+            "id" : "100",
+            "sourceId" : "85",
+            "tags" : "Relationship",
+            "technology" : "API"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Nest.js"
+        }, {
+          "description" : "AML provider integration.",
+          "documentation" : { },
+          "id" : "86",
+          "name" : "AML Integration",
+          "properties" : {
+            "structurizr.dsl.identifier" : "casAml"
+          },
+          "relationships" : [ {
+            "description" : "Publishes",
+            "destinationId" : "84",
+            "id" : "96",
+            "sourceId" : "86",
+            "tags" : "Relationship",
+            "technology" : "Kafka"
+          }, {
+            "description" : "Uses",
+            "destinationId" : "18",
+            "id" : "103",
+            "sourceId" : "86",
+            "tags" : "Relationship",
+            "technology" : "API"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Nest.js"
+        }, {
+          "description" : "Fraud detection integration.",
+          "documentation" : { },
+          "id" : "87",
+          "name" : "Fraud Integration",
+          "properties" : {
+            "structurizr.dsl.identifier" : "casFraud"
+          },
+          "relationships" : [ {
+            "description" : "Publishes",
+            "destinationId" : "84",
+            "id" : "97",
+            "sourceId" : "87",
+            "tags" : "Relationship",
+            "technology" : "Kafka"
+          }, {
+            "description" : "Uses",
+            "destinationId" : "16",
+            "id" : "106",
+            "sourceId" : "87",
+            "tags" : "Relationship",
+            "technology" : "API"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Nest.js"
+        }, {
+          "description" : "Games provider integration.",
+          "documentation" : { },
+          "id" : "88",
+          "name" : "Games Integration",
+          "properties" : {
+            "structurizr.dsl.identifier" : "casGames"
+          },
+          "relationships" : [ {
+            "description" : "Publishes",
+            "destinationId" : "84",
+            "id" : "98",
+            "sourceId" : "88",
+            "tags" : "Relationship",
+            "technology" : "Kafka"
+          }, {
+            "description" : "Uses",
+            "destinationId" : "14",
+            "id" : "109",
+            "sourceId" : "88",
+            "tags" : "Relationship",
+            "technology" : "API"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Nest.js"
+        }, {
+          "description" : "Payments integration.",
+          "documentation" : { },
+          "id" : "89",
+          "name" : "Payments Integration",
+          "properties" : {
+            "structurizr.dsl.identifier" : "casPayments"
+          },
+          "relationships" : [ {
+            "description" : "Publishes",
+            "destinationId" : "84",
+            "id" : "99",
+            "sourceId" : "89",
+            "tags" : "Relationship",
+            "technology" : "Kafka"
+          }, {
+            "description" : "Uses",
+            "destinationId" : "15",
+            "id" : "112",
+            "sourceId" : "89",
+            "tags" : "Relationship",
+            "technology" : "API"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Nest.js"
+        } ],
+        "description" : "Per-brand B2C: Gateway, Brand, IAM, CMS, Events bus, Games/Payments/AML/KYC/Affiliations/Fraud integrations.",
+        "documentation" : { },
+        "id" : "79",
+        "name" : "Casino",
+        "properties" : {
+          "structurizr.dsl.identifier" : "casino"
+        },
+        "relationships" : [ {
+          "description" : "Uses",
+          "destinationId" : "17",
+          "id" : "101",
+          "linkedRelationshipId" : "100",
+          "sourceId" : "79",
+          "technology" : "API"
+        }, {
+          "description" : "Uses",
+          "destinationId" : "18",
+          "id" : "104",
+          "linkedRelationshipId" : "103",
+          "sourceId" : "79",
+          "technology" : "API"
+        }, {
+          "description" : "Uses",
+          "destinationId" : "16",
+          "id" : "107",
+          "linkedRelationshipId" : "106",
+          "sourceId" : "79",
+          "technology" : "API"
+        }, {
+          "description" : "Uses",
+          "destinationId" : "14",
+          "id" : "110",
+          "linkedRelationshipId" : "109",
+          "sourceId" : "79",
+          "technology" : "API"
+        }, {
+          "description" : "Uses",
+          "destinationId" : "15",
+          "id" : "113",
+          "linkedRelationshipId" : "112",
+          "sourceId" : "79",
+          "technology" : "API"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "Next.js"
+      } ],
+      "description" : "B2B2C SaaS for Operators to manage and deploy B2C Casinos under unique Brands. MVP 1 year.",
+      "documentation" : {
+        "decisions" : [ {
+          "content" : "# 1. Use Structurizr DSL and ADD 3.0 for architecture docs\n\n## Status\n\nAccepted\n\n## Context\n\nWe need a single source of truth for architecture and decisions in the repo.\n\n## Decision\n\nWe use Structurizr DSL (C4) with !docs and !adrs, and follow ADD 3.0 for design steps.\n\n## Consequences\n\n- Diagrams and docs live in the repo; Structurizr vNext (local/export) for viewing.\n- ADRs in MADR format for compatibility with Structurizr importers.\n",
+          "date" : "2026-02-22T09:37:29Z",
+          "format" : "Markdown",
+          "id" : "1",
+          "status" : "accepted",
+          "title" : "1. Use Structurizr DSL and ADD 3.0 for architecture docs"
+        }, {
+          "content" : "# 2. Platform stack and technical constraints\n\n## Status\n\nAccepted\n\n## Context\n\nThe platform must deliver MVP in 1 year, reduce development cost and time (use of ready-made services), and align with team skills and market availability of developers. Regulatory and integration requirements (payments, games, KYC/AML, fraud) must be met.\n\n## Decision\n\n- **Runtime:** Node.js. **Language:** TypeScript/JavaScript.\n- **Backend:** Nest.js for API and microservices.\n- **Frontend:** Next.js (B2C and SSR); Refine for operator and platform back-office.\n- **Data:** PostgreSQL (ACID, source of truth), TypeORM; Redis for caching.\n- **API style:** REST + SSE for platform and tenant APIs.\n- **DevOps:** Jenkins (CI); Digital Ocean (dev), AWS (prod); Cloudflare (DNS/CDN). Monorepo in Bitbucket.\n- **Integrations:** Seon (fraud), Praxis (payments), Softswiss (games), SendGrid (notifications), LiveChat (support), Google Analytics. HashiCorp Vault for secrets; Payload for CMS.\n\n## Consequences\n\n- Backend and frontend are JavaScript/TypeScript; team can share types and tooling.\n- Nest.js and Next.js provide structure and speed for MVP; Refine accelerates back-office UIs.\n- PostgreSQL and Redis are well-understood; integration layer must abstract external providers (payments, games, KYC/AML).\n- Regulatory and multi-tenant concerns (data isolation, reporting, licensing) must be designed into the architecture from the start.\n",
+          "date" : "2026-02-23T06:39:38Z",
+          "format" : "Markdown",
+          "id" : "2",
+          "status" : "accepted",
+          "title" : "2. Platform stack and technical constraints"
+        } ],
+        "sections" : [ {
+          "content" : "# Architecture overview\n\nB2B2C SaaS gambling platform that enables **B2B tenants** (gambling Operators) to efficiently manage and deploy **B2C online Casinos** under unique Brands. The platform is scalable, secure, and customizable; it aims to enhance user engagement, ensure regulatory compliance, and provide advanced analytics. By reducing IT costs, enabling quick market entry, and offering tailored user experiences, it helps Operators increase revenue and profitability.\n\n**MVP target: 1 year.**\n\n**Source of truth:** [Business Architecture](https://veryuniquename.atlassian.net/wiki/spaces/G/pages/229834764/Business+Architecture) (Confluence, space G — GromTech). This repo reflects that content for ADD 3.0 and C4.\n\n## Drivers (summary)\n\n- **Functional:** Multi-tenant platform for Operators to manage and deploy B2C casinos; per-tenant branding; operator and tenant management; deployment and configuration of casino instances; user engagement, regulatory compliance, advanced analytics; integrations (games, payments, KYC/AML, fraud, affiliates).\n- **Quality attributes:** Scalability (multi-tenant, many brands/casinos); security (payments, PII, gambling compliance); customizability per tenant/brand; reliability and availability for gambling operations; regulatory compliance (jurisdictions, licensing, responsible gambling).\n- **Constraints:** MVP in 1 year; B2B2C and multi-tenant model; regulated gambling markets; competitive market (time-to-market, cost efficiency); stack and integrations fixed (see [01-requirements.md](01-requirements.md) and [ADR 0002](../adrs/0002-platform-stack-and-constraints.md)).\n\n## Decomposition focus\n\nFirst element to decompose: **Gambling Platform** (whole product). Target first-level containers from Business Architecture: **Platform Infrastructure**, **Operator Tenant**, **Casino** (see [02-decomposition.md](02-decomposition.md)).\n",
+          "filename" : "00-overview.md",
+          "format" : "Markdown",
+          "order" : 1,
+          "title" : ""
+        }, {
+          "content" : "# Requirements and drivers (from Business Architecture)\n\nThis document reflects the **Drivers/Goals/Objectives**, **Constraints**, and **Assumptions** from [Business Architecture](https://veryuniquename.atlassian.net/wiki/spaces/G/pages/229834764/Business+Architecture). Used for ADD 3.0 Part 1 (requirements, drivers, design concepts).\n\n---\n\n## Drivers / Goals / Objectives\n\n| Driver | Goal | Key objectives |\n|--------|------|----------------|\n| Растущий интерес к онлайн-гемблингу | 5% рынков, на которые мы хотим войти | — |\n| Меняющиеся регуляторные требования | Поддержка 15+ стран/регионов к концу 1-го года | Сформировать юридическую команду по 5 ключевым регионам за 12 месяцев |\n| Опыт инвестора в Trading и Affiliate-бизнесе | Создать партнерскую программу | Внедрить аналитику поведения игроков за 12 мес.; привлечь 100+ активных партнеров-аффилиатов к концу года |\n| Сеть потенциальных инвесторов | Привлечь $20M за 24 месяца с сохранением 51%+ доли основателей | Инвестиционный план с KPI за 3 мес.; прозрачная система управления с ежемесячной отчетностью через 3 мес. после MVP |\n| Распространение интернета и мобильных устройств | Поддержка 50+ способов оплаты | 95% покрытие рынков за 3 мес.; время от инициации способа оплаты до прода &lt; 1 мес.; депозиты &lt; 30 сек.; каскадинг до MVP |\n| Появление новых типов игр | Поддержка 10+ категорий игр с выводом новых | Универсальное API для интеграции за 3 мес.; подключение игрового провайдера за 1 день; A/B-тестирование геймификации за 12 мес. |\n| Доступность готовых сервисов (KYC, AML) | Сократить разработку MVP на 50% и расходы на 40% (запуск за 12 мес.) | Выбрать решения для 8 ключевых компонентов; унифицированный интеграционный слой |\n| Высокая маржинальность гемблинга | Маржа 30%, потери от сбоев &lt; 0,5% | Доступность 99,9% в первый год; автоматизация восстановления 90% типовых ошибок; раннее обнаружение аномалий до MVP |\n| Запрос на прозрачные легальные решения | Сертификация 1 лицензии каждые 6 месяцев | Документация для сертификации за 3 мес.; отчетность регулятору; минимально достаточный уровень для аудитов |\n| Разделение ответственности B2B/B2C | Распределить 100% регуляторных рисков за год | Зоны ответственности за 6 мес.; разделение данных между уровнями; типовые договоры |\n| Разнообразие глобальных рынков | Выход на региональные рынки | Модульная архитектура под разные рынки за MVP; библиотека регуляторных шаблонов (новый рынок за 1 мес.); мультиязычность и мультивалютность |\n\n---\n\n## Constraints (stack and integrations)\n\n| Area | Choice |\n|------|--------|\n| **Runtime** | Node.js |\n| **Language** | TypeScript / JavaScript |\n| **Backend** | Nest.js (API, microservices) |\n| **Frontend** | Next.js, Refine (operator/platform UIs) |\n| **DevOps** | Jenkins (CI), Digital Ocean (dev), AWS (prod), Cloudflare (DNS/CDN) |\n| **Repo** | Bitbucket (monorepo) |\n| **API** | REST + SSE |\n| **Database** | PostgreSQL (ACID), TypeORM |\n| **Caching** | Redis |\n| **Integrations** | Seon (fraud), Praxis (payments), Softswiss (games), SendGrid (notifications), LiveChat (support), Google Analytics |\n| **Secrets** | HashiCorp Vault |\n| **CMS** | Payload |\n\n---\n\n## Assumptions (load and SLA)\n\n| Parameter | Value |\n|-----------|--------|\n| Total Operators | 100 |\n| Daily active Operators | 50% |\n| Online casinos per Operator | 10 |\n| Total End-users per casino | 100,000 |\n| Daily active End-users | 20% |\n| Requests peak ratio | 300% |\n\n**SLA (summary):** Uptime 99.9% (web apps) / 99.95% (APIs); API response &lt; 200 ms (p95); critical transactions &lt; 100 ms; page load &lt; 3 s; support 24/7, critical response &lt; 1 h.\n\nFull SLAs per application (Brand, Back-office Operator/Platform, APIs, CI/CD, Monitoring) are in Business Architecture.\n",
+          "filename" : "01-requirements.md",
+          "format" : "Markdown",
+          "order" : 2,
+          "title" : ""
+        }, {
+          "content" : "# Decomposition (ADD)\n\n**Element to decompose:** Gambling Platform (software system).\n\n**Source:** [Business Architecture — Systems Levels](https://veryuniquename.atlassian.net/wiki/spaces/G/pages/229834764/Business+Architecture).\n\n---\n\n## First-level decomposition (containers)\n\nThe platform is decomposed into three main containers:\n\n| Container | Responsibility |\n|-----------|----------------|\n| **Platform Infrastructure** | Shared platform: Gateway, CI/CD, Platform CRM, Events bus, IAM, Reports. Container Registry, Secrets, Configuration, Observability, platform instance environment. |\n| **Operator Tenant** | Per-tenant backoffice: Gateway, Operator CRM, Events bus, IAM, Reports. One logical tenant per Operator. |\n| **Casino** | Per-brand B2C: Gateway, Brand (front), IAM, CMS, Events bus; integrations (Games, Payments, AML, KYC, Affiliations, Fraud detection). One logical casino per Brand. |\n\n**Relationships (conceptual):**\n\n- Platform Infrastructure hosts and operates Operator Tenants.\n- Operator Tenant hosts and operates Casinos.\n- **Platform Owner** manages Platform Infrastructure (and thus tenants).\n- **Operator** manages Operator Tenant and its Casinos.\n- **Player** (end-user) uses Casino.\n\n---\n\n## Value streams (reference)\n\n- **Platform Development:** Plan → Develop → Test → Release → Deploy → Operate → Maintain.\n- **Platform Operations (White Label / Turnkey):** Browse platform, manage staff, integrations, deploy tenant, onboard operator, deploy casino, operate, reports, analytics.\n- **B2B (White Label / Turnkey):** Operator manages tenant, game/payment providers, casinos, players, deposits/withdrawals, KYC/AML, complaints, promos/bonuses, support, compliance, reports, analytics.\n- **B2C:** Player browses casino, onboard, select game, play, deposit/withdraw, profile, responsible gambling, promotions, support.\n\nDetailed stages and capabilities are in Business Architecture (Value Streams, Business Capabilities).\n\n---\n\n## Next ADD steps\n\n- **Part 2.2:** Define interfaces between Platform Infrastructure ↔ Operator Tenant ↔ Casino.\n- **Part 2.3:** Verify and refine requirements (constraints per container).\n- **Part 2.4:** Choose next element to decompose (e.g. Platform Infrastructure, Operator Tenant, or Casino) and repeat.\n",
+          "filename" : "02-decomposition.md",
+          "format" : "Markdown",
+          "order" : 3,
+          "title" : ""
+        } ]
+      },
+      "id" : "24",
+      "name" : "Gambling Platform",
       "properties" : {
         "structurizr.dsl.identifier" : "main"
       },
+      "relationships" : [ {
+        "description" : "Uses",
+        "destinationId" : "17",
+        "id" : "102",
+        "linkedRelationshipId" : "100",
+        "sourceId" : "24",
+        "technology" : "API"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "18",
+        "id" : "105",
+        "linkedRelationshipId" : "103",
+        "sourceId" : "24",
+        "technology" : "API"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "16",
+        "id" : "108",
+        "linkedRelationshipId" : "106",
+        "sourceId" : "24",
+        "technology" : "API"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "14",
+        "id" : "111",
+        "linkedRelationshipId" : "109",
+        "sourceId" : "24",
+        "technology" : "API"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "15",
+        "id" : "114",
+        "linkedRelationshipId" : "112",
+        "sourceId" : "24",
+        "technology" : "API"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "13",
+        "id" : "129",
+        "sourceId" : "24",
+        "tags" : "Relationship",
+        "technology" : "HTTPS"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "19",
+        "id" : "130",
+        "sourceId" : "24",
+        "tags" : "Relationship",
+        "technology" : "API"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "20",
+        "id" : "132",
+        "linkedRelationshipId" : "131",
+        "sourceId" : "24",
+        "technology" : "API"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "21",
+        "id" : "134",
+        "linkedRelationshipId" : "133",
+        "sourceId" : "24",
+        "technology" : "API"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "22",
+        "id" : "136",
+        "linkedRelationshipId" : "135",
+        "sourceId" : "24",
+        "technology" : "API"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "23",
+        "id" : "138",
+        "linkedRelationshipId" : "137",
+        "sourceId" : "24",
+        "technology" : "API"
+      } ],
       "tags" : "Element,Software System"
     } ]
   },
@@ -59,10 +1237,447 @@
     "structurizr.inspection.warning" : "0"
   },
   "views" : {
+    "componentViews" : [ {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "containerId" : "25",
+      "description" : "Platform Infrastructure components (L2).",
+      "elements" : [ {
+        "id" : "26",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "27",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "28",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "29",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "30",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "31",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "32",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "33",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "34",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "35",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "36",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "37",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "38",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "39",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "40",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "41",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "42",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "43",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "44",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalContainerBoundariesVisible" : false,
+      "key" : "Components_Platform",
+      "name" : "Component View: Gambling Platform - Platform Infrastructure",
+      "order" : 7,
+      "relationships" : [ {
+        "id" : "45"
+      }, {
+        "id" : "46"
+      }, {
+        "id" : "47"
+      }, {
+        "id" : "48"
+      }, {
+        "id" : "49"
+      }, {
+        "id" : "50"
+      }, {
+        "id" : "51"
+      }, {
+        "id" : "52"
+      }, {
+        "id" : "53"
+      }, {
+        "id" : "54"
+      }, {
+        "id" : "55"
+      }, {
+        "id" : "56"
+      }, {
+        "id" : "57"
+      }, {
+        "id" : "58"
+      }, {
+        "id" : "59"
+      }, {
+        "id" : "60"
+      }, {
+        "id" : "61"
+      }, {
+        "id" : "62"
+      } ]
+    }, {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "containerId" : "63",
+      "description" : "Operator Tenant components (L2).",
+      "elements" : [ {
+        "id" : "64",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "65",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "66",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "67",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "68",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "69",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalContainerBoundariesVisible" : false,
+      "key" : "Components_Operator",
+      "name" : "Component View: Gambling Platform - Operator Tenant",
+      "order" : 8,
+      "relationships" : [ {
+        "id" : "70"
+      }, {
+        "id" : "71"
+      }, {
+        "id" : "72"
+      }, {
+        "id" : "73"
+      }, {
+        "id" : "74"
+      }, {
+        "id" : "75"
+      }, {
+        "id" : "76"
+      }, {
+        "id" : "77"
+      }, {
+        "id" : "78"
+      } ]
+    }, {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "containerId" : "79",
+      "description" : "Casino components (L2).",
+      "elements" : [ {
+        "id" : "14",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "15",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "16",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "17",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "18",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "80",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "81",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "82",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "83",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "84",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "85",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "86",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "87",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "88",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "89",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalContainerBoundariesVisible" : false,
+      "key" : "Components_Casino",
+      "name" : "Component View: Gambling Platform - Casino",
+      "order" : 9,
+      "relationships" : [ {
+        "id" : "100"
+      }, {
+        "id" : "103"
+      }, {
+        "id" : "106"
+      }, {
+        "id" : "109"
+      }, {
+        "id" : "112"
+      }, {
+        "id" : "90"
+      }, {
+        "id" : "91"
+      }, {
+        "id" : "92"
+      }, {
+        "id" : "93"
+      }, {
+        "id" : "94"
+      }, {
+        "id" : "95"
+      }, {
+        "id" : "96"
+      }, {
+        "id" : "97"
+      }, {
+        "id" : "98"
+      }, {
+        "id" : "99"
+      } ]
+    } ],
     "configuration" : {
       "styles" : { },
       "terminology" : { }
     },
+    "containerViews" : [ {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "description" : "First-level decomposition: Platform Infrastructure, Operator Tenant, Casino.",
+      "elements" : [ {
+        "id" : "14",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "15",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "16",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "17",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "18",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "20",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "21",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "22",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "23",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "25",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "63",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "79",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalSoftwareSystemBoundariesVisible" : false,
+      "key" : "Containers",
+      "name" : "Container View: Gambling Platform",
+      "order" : 3,
+      "relationships" : [ {
+        "id" : "101"
+      }, {
+        "id" : "104"
+      }, {
+        "id" : "107"
+      }, {
+        "id" : "110"
+      }, {
+        "id" : "113"
+      }, {
+        "id" : "115"
+      }, {
+        "id" : "116"
+      }, {
+        "id" : "131"
+      }, {
+        "id" : "133"
+      }, {
+        "id" : "135"
+      }, {
+        "id" : "137"
+      } ],
+      "softwareSystemId" : "24"
+    }, {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "description" : "Platform Infrastructure container.",
+      "elements" : [ {
+        "id" : "25",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalSoftwareSystemBoundariesVisible" : false,
+      "key" : "Containers_Platform",
+      "name" : "Container View: Gambling Platform",
+      "order" : 4,
+      "softwareSystemId" : "24"
+    }, {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "description" : "Operator Tenant container.",
+      "elements" : [ {
+        "id" : "63",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalSoftwareSystemBoundariesVisible" : false,
+      "key" : "Containers_Operator",
+      "name" : "Container View: Gambling Platform",
+      "order" : 5,
+      "softwareSystemId" : "24"
+    }, {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "description" : "Casino container.",
+      "elements" : [ {
+        "id" : "79",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalSoftwareSystemBoundariesVisible" : false,
+      "key" : "Containers_Casino",
+      "name" : "Container View: Gambling Platform",
+      "order" : 6,
+      "softwareSystemId" : "24"
+    } ],
     "systemContextViews" : [ {
       "automaticLayout" : {
         "edgeSeparation" : 50,
@@ -71,7 +1686,7 @@
         "rankSeparation" : 100,
         "vertices" : true
       },
-      "description" : "System context for Main System.",
+      "description" : "L1: System context (persons, platform, external systems).",
       "elements" : [ {
         "id" : "1",
         "x" : 0,
@@ -80,15 +1695,147 @@
         "id" : "2",
         "x" : 0,
         "y" : 0
+      }, {
+        "id" : "3",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "4",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "5",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "6",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "7",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "8",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "9",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "10",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "11",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "12",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "13",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "14",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "15",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "16",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "17",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "18",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "19",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "20",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "21",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "22",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "23",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "24",
+        "x" : 0,
+        "y" : 0
       } ],
       "enterpriseBoundaryVisible" : true,
-      "key" : "SystemContext",
-      "name" : "System Context View: Main System",
+      "key" : "SystemContext_L1",
+      "name" : "System Context View: Gambling Platform",
       "order" : 2,
       "relationships" : [ {
-        "id" : "3"
+        "id" : "102"
+      }, {
+        "id" : "105"
+      }, {
+        "id" : "108"
+      }, {
+        "id" : "111"
+      }, {
+        "id" : "114"
+      }, {
+        "id" : "117"
+      }, {
+        "id" : "118"
+      }, {
+        "id" : "119"
+      }, {
+        "id" : "120"
+      }, {
+        "id" : "121"
+      }, {
+        "id" : "122"
+      }, {
+        "id" : "123"
+      }, {
+        "id" : "124"
+      }, {
+        "id" : "125"
+      }, {
+        "id" : "126"
+      }, {
+        "id" : "127"
+      }, {
+        "id" : "128"
+      }, {
+        "id" : "129"
+      }, {
+        "id" : "130"
+      }, {
+        "id" : "132"
+      }, {
+        "id" : "134"
+      }, {
+        "id" : "136"
+      }, {
+        "id" : "138"
       } ],
-      "softwareSystemId" : "2"
+      "softwareSystemId" : "24"
     } ],
     "systemLandscapeViews" : [ {
       "automaticLayout" : {
@@ -98,7 +1845,7 @@
         "rankSeparation" : 100,
         "vertices" : true
       },
-      "description" : "Default landscape view.",
+      "description" : "Landscape: persons and Gambling Platform.",
       "elements" : [ {
         "id" : "1",
         "x" : 0,
@@ -107,13 +1854,145 @@
         "id" : "2",
         "x" : 0,
         "y" : 0
+      }, {
+        "id" : "3",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "4",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "5",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "6",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "7",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "8",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "9",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "10",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "11",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "12",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "13",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "14",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "15",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "16",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "17",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "18",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "19",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "20",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "21",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "22",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "23",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "24",
+        "x" : 0,
+        "y" : 0
       } ],
       "enterpriseBoundaryVisible" : true,
       "key" : "SystemLandscape",
       "name" : "System Landscape View",
       "order" : 1,
       "relationships" : [ {
-        "id" : "3"
+        "id" : "102"
+      }, {
+        "id" : "105"
+      }, {
+        "id" : "108"
+      }, {
+        "id" : "111"
+      }, {
+        "id" : "114"
+      }, {
+        "id" : "117"
+      }, {
+        "id" : "118"
+      }, {
+        "id" : "119"
+      }, {
+        "id" : "120"
+      }, {
+        "id" : "121"
+      }, {
+        "id" : "122"
+      }, {
+        "id" : "123"
+      }, {
+        "id" : "124"
+      }, {
+        "id" : "125"
+      }, {
+        "id" : "126"
+      }, {
+        "id" : "127"
+      }, {
+        "id" : "128"
+      }, {
+        "id" : "129"
+      }, {
+        "id" : "130"
+      }, {
+        "id" : "132"
+      }, {
+        "id" : "134"
+      }, {
+        "id" : "136"
+      }, {
+        "id" : "138"
       } ]
     } ]
   }
