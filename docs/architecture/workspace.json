@@ -40,7 +40,7 @@
     } ]
   },
   "id" : 1,
-  "lastModifiedDate" : "2026-02-23T07:06:47Z",
+  "lastModifiedDate" : "2026-02-23T07:15:17Z",
   "model" : {
     "people" : [ {
       "description" : "Manages platform.",
@@ -52,7 +52,7 @@
       "relationships" : [ {
         "description" : "Manages",
         "destinationId" : "24",
-        "id" : "117",
+        "id" : "107",
         "sourceId" : "1",
         "tags" : "Relationship",
         "technology" : "Web Browser"
@@ -68,7 +68,7 @@
       "relationships" : [ {
         "description" : "Manages",
         "destinationId" : "24",
-        "id" : "118",
+        "id" : "108",
         "sourceId" : "2",
         "tags" : "Relationship",
         "technology" : "Web Browser"
@@ -84,7 +84,7 @@
       "relationships" : [ {
         "description" : "Manages",
         "destinationId" : "24",
-        "id" : "120",
+        "id" : "110",
         "sourceId" : "3",
         "tags" : "Relationship",
         "technology" : "Web Browser"
@@ -100,7 +100,7 @@
       "relationships" : [ {
         "description" : "Manages",
         "destinationId" : "24",
-        "id" : "121",
+        "id" : "111",
         "sourceId" : "4",
         "tags" : "Relationship",
         "technology" : "Web Browser"
@@ -116,7 +116,7 @@
       "relationships" : [ {
         "description" : "Uses",
         "destinationId" : "24",
-        "id" : "122",
+        "id" : "112",
         "sourceId" : "5",
         "tags" : "Relationship",
         "technology" : "Web Browser"
@@ -132,7 +132,7 @@
       "relationships" : [ {
         "description" : "Uses",
         "destinationId" : "24",
-        "id" : "123",
+        "id" : "113",
         "sourceId" : "6",
         "tags" : "Relationship",
         "technology" : "Web Browser"
@@ -148,7 +148,7 @@
       "relationships" : [ {
         "description" : "Develops",
         "destinationId" : "24",
-        "id" : "124",
+        "id" : "114",
         "sourceId" : "7",
         "tags" : "Relationship",
         "technology" : "IDE"
@@ -164,7 +164,7 @@
       "relationships" : [ {
         "description" : "Maintains",
         "destinationId" : "24",
-        "id" : "125",
+        "id" : "115",
         "sourceId" : "8",
         "tags" : "Relationship",
         "technology" : "CLI"
@@ -180,7 +180,7 @@
       "relationships" : [ {
         "description" : "Designs",
         "destinationId" : "24",
-        "id" : "126",
+        "id" : "116",
         "sourceId" : "9",
         "tags" : "Relationship",
         "technology" : "Design tools"
@@ -196,7 +196,7 @@
       "relationships" : [ {
         "description" : "Tests",
         "destinationId" : "24",
-        "id" : "127",
+        "id" : "117",
         "sourceId" : "10",
         "tags" : "Relationship",
         "technology" : "Test tools"
@@ -212,7 +212,7 @@
       "relationships" : [ {
         "description" : "Manages",
         "destinationId" : "24",
-        "id" : "119",
+        "id" : "109",
         "sourceId" : "11",
         "tags" : "Relationship",
         "technology" : "Web Browser"
@@ -228,7 +228,7 @@
       "relationships" : [ {
         "description" : "Manages",
         "destinationId" : "24",
-        "id" : "128",
+        "id" : "118",
         "sourceId" : "12",
         "tags" : "Relationship",
         "technology" : "Web Browser"
@@ -665,35 +665,35 @@
         "relationships" : [ {
           "description" : "Hosts",
           "destinationId" : "63",
-          "id" : "115",
+          "id" : "105",
           "sourceId" : "25",
           "tags" : "Relationship",
           "technology" : "Platform API"
         }, {
           "description" : "Uses",
           "destinationId" : "20",
-          "id" : "131",
+          "id" : "126",
           "sourceId" : "25",
           "tags" : "Relationship",
           "technology" : "API"
         }, {
           "description" : "Uses",
           "destinationId" : "21",
-          "id" : "133",
+          "id" : "127",
           "sourceId" : "25",
           "tags" : "Relationship",
           "technology" : "API"
         }, {
           "description" : "Uses",
           "destinationId" : "22",
-          "id" : "135",
+          "id" : "128",
           "sourceId" : "25",
           "tags" : "Relationship",
           "technology" : "API"
         }, {
           "description" : "Uses",
           "destinationId" : "23",
-          "id" : "137",
+          "id" : "129",
           "sourceId" : "25",
           "tags" : "Relationship",
           "technology" : "API"
@@ -839,7 +839,7 @@
         "relationships" : [ {
           "description" : "Hosts",
           "destinationId" : "79",
-          "id" : "116",
+          "id" : "106",
           "sourceId" : "63",
           "tags" : "Relationship",
           "technology" : "Tenant API"
@@ -977,7 +977,7 @@
           }, {
             "description" : "Uses",
             "destinationId" : "18",
-            "id" : "103",
+            "id" : "101",
             "sourceId" : "86",
             "tags" : "Relationship",
             "technology" : "API"
@@ -1002,7 +1002,7 @@
           }, {
             "description" : "Uses",
             "destinationId" : "16",
-            "id" : "106",
+            "id" : "102",
             "sourceId" : "87",
             "tags" : "Relationship",
             "technology" : "API"
@@ -1027,7 +1027,7 @@
           }, {
             "description" : "Uses",
             "destinationId" : "14",
-            "id" : "109",
+            "id" : "103",
             "sourceId" : "88",
             "tags" : "Relationship",
             "technology" : "API"
@@ -1052,7 +1052,7 @@
           }, {
             "description" : "Uses",
             "destinationId" : "15",
-            "id" : "112",
+            "id" : "104",
             "sourceId" : "89",
             "tags" : "Relationship",
             "technology" : "API"
@@ -1067,42 +1067,6 @@
         "properties" : {
           "structurizr.dsl.identifier" : "casino"
         },
-        "relationships" : [ {
-          "description" : "Uses",
-          "destinationId" : "17",
-          "id" : "101",
-          "linkedRelationshipId" : "100",
-          "sourceId" : "79",
-          "technology" : "API"
-        }, {
-          "description" : "Uses",
-          "destinationId" : "18",
-          "id" : "104",
-          "linkedRelationshipId" : "103",
-          "sourceId" : "79",
-          "technology" : "API"
-        }, {
-          "description" : "Uses",
-          "destinationId" : "16",
-          "id" : "107",
-          "linkedRelationshipId" : "106",
-          "sourceId" : "79",
-          "technology" : "API"
-        }, {
-          "description" : "Uses",
-          "destinationId" : "14",
-          "id" : "110",
-          "linkedRelationshipId" : "109",
-          "sourceId" : "79",
-          "technology" : "API"
-        }, {
-          "description" : "Uses",
-          "destinationId" : "15",
-          "id" : "113",
-          "linkedRelationshipId" : "112",
-          "sourceId" : "79",
-          "technology" : "API"
-        } ],
         "tags" : "Element,Container",
         "technology" : "Next.js"
       } ],
@@ -1150,80 +1114,52 @@
       },
       "relationships" : [ {
         "description" : "Uses",
-        "destinationId" : "17",
-        "id" : "102",
-        "linkedRelationshipId" : "100",
-        "sourceId" : "24",
-        "technology" : "API"
-      }, {
-        "description" : "Uses",
-        "destinationId" : "18",
-        "id" : "105",
-        "linkedRelationshipId" : "103",
-        "sourceId" : "24",
-        "technology" : "API"
-      }, {
-        "description" : "Uses",
-        "destinationId" : "16",
-        "id" : "108",
-        "linkedRelationshipId" : "106",
-        "sourceId" : "24",
-        "technology" : "API"
-      }, {
-        "description" : "Uses",
-        "destinationId" : "14",
-        "id" : "111",
-        "linkedRelationshipId" : "109",
-        "sourceId" : "24",
-        "technology" : "API"
-      }, {
-        "description" : "Uses",
-        "destinationId" : "15",
-        "id" : "114",
-        "linkedRelationshipId" : "112",
-        "sourceId" : "24",
-        "technology" : "API"
-      }, {
-        "description" : "Uses",
         "destinationId" : "13",
-        "id" : "129",
+        "id" : "119",
         "sourceId" : "24",
         "tags" : "Relationship",
         "technology" : "HTTPS"
       }, {
         "description" : "Uses",
         "destinationId" : "19",
-        "id" : "130",
+        "id" : "120",
         "sourceId" : "24",
         "tags" : "Relationship",
         "technology" : "API"
       }, {
         "description" : "Uses",
-        "destinationId" : "20",
-        "id" : "132",
-        "linkedRelationshipId" : "131",
+        "destinationId" : "14",
+        "id" : "121",
         "sourceId" : "24",
+        "tags" : "Relationship",
         "technology" : "API"
       }, {
         "description" : "Uses",
-        "destinationId" : "21",
-        "id" : "134",
-        "linkedRelationshipId" : "133",
+        "destinationId" : "15",
+        "id" : "122",
         "sourceId" : "24",
+        "tags" : "Relationship",
         "technology" : "API"
       }, {
         "description" : "Uses",
-        "destinationId" : "22",
-        "id" : "136",
-        "linkedRelationshipId" : "135",
+        "destinationId" : "17",
+        "id" : "123",
         "sourceId" : "24",
+        "tags" : "Relationship",
         "technology" : "API"
       }, {
         "description" : "Uses",
-        "destinationId" : "23",
-        "id" : "138",
-        "linkedRelationshipId" : "137",
+        "destinationId" : "18",
+        "id" : "124",
         "sourceId" : "24",
+        "tags" : "Relationship",
+        "technology" : "API"
+      }, {
+        "description" : "Uses",
+        "destinationId" : "16",
+        "id" : "125",
+        "sourceId" : "24",
+        "tags" : "Relationship",
         "technology" : "API"
       } ],
       "tags" : "Element,Software System"
@@ -1501,13 +1437,13 @@
       "relationships" : [ {
         "id" : "100"
       }, {
+        "id" : "101"
+      }, {
+        "id" : "102"
+      }, {
         "id" : "103"
       }, {
-        "id" : "106"
-      }, {
-        "id" : "109"
-      }, {
-        "id" : "112"
+        "id" : "104"
       }, {
         "id" : "90"
       }, {
@@ -1544,26 +1480,6 @@
       },
       "description" : "First-level decomposition: Platform Infrastructure, Operator Tenant, Casino.",
       "elements" : [ {
-        "id" : "14",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "15",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "16",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "17",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "18",
-        "x" : 0,
-        "y" : 0
-      }, {
         "id" : "20",
         "x" : 0,
         "y" : 0
@@ -1597,27 +1513,17 @@
       "name" : "Container View: Gambling Platform",
       "order" : 3,
       "relationships" : [ {
-        "id" : "101"
+        "id" : "105"
       }, {
-        "id" : "104"
+        "id" : "106"
       }, {
-        "id" : "107"
+        "id" : "126"
       }, {
-        "id" : "110"
+        "id" : "127"
       }, {
-        "id" : "113"
+        "id" : "128"
       }, {
-        "id" : "115"
-      }, {
-        "id" : "116"
-      }, {
-        "id" : "131"
-      }, {
-        "id" : "133"
-      }, {
-        "id" : "135"
-      }, {
-        "id" : "137"
+        "id" : "129"
       } ],
       "softwareSystemId" : "24"
     }, {
@@ -1764,22 +1670,6 @@
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "20",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "21",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "22",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "23",
-        "x" : 0,
-        "y" : 0
-      }, {
         "id" : "24",
         "x" : 0,
         "y" : 0
@@ -1789,15 +1679,25 @@
       "name" : "System Context View: Gambling Platform",
       "order" : 2,
       "relationships" : [ {
-        "id" : "102"
-      }, {
-        "id" : "105"
+        "id" : "107"
       }, {
         "id" : "108"
       }, {
+        "id" : "109"
+      }, {
+        "id" : "110"
+      }, {
         "id" : "111"
       }, {
+        "id" : "112"
+      }, {
+        "id" : "113"
+      }, {
         "id" : "114"
+      }, {
+        "id" : "115"
+      }, {
+        "id" : "116"
       }, {
         "id" : "117"
       }, {
@@ -1816,24 +1716,6 @@
         "id" : "124"
       }, {
         "id" : "125"
-      }, {
-        "id" : "126"
-      }, {
-        "id" : "127"
-      }, {
-        "id" : "128"
-      }, {
-        "id" : "129"
-      }, {
-        "id" : "130"
-      }, {
-        "id" : "132"
-      }, {
-        "id" : "134"
-      }, {
-        "id" : "136"
-      }, {
-        "id" : "138"
       } ],
       "softwareSystemId" : "24"
     } ],
@@ -1948,15 +1830,25 @@
       "name" : "System Landscape View",
       "order" : 1,
       "relationships" : [ {
-        "id" : "102"
-      }, {
-        "id" : "105"
+        "id" : "107"
       }, {
         "id" : "108"
       }, {
+        "id" : "109"
+      }, {
+        "id" : "110"
+      }, {
         "id" : "111"
       }, {
+        "id" : "112"
+      }, {
+        "id" : "113"
+      }, {
         "id" : "114"
+      }, {
+        "id" : "115"
+      }, {
+        "id" : "116"
       }, {
         "id" : "117"
       }, {
@@ -1975,24 +1867,6 @@
         "id" : "124"
       }, {
         "id" : "125"
-      }, {
-        "id" : "126"
-      }, {
-        "id" : "127"
-      }, {
-        "id" : "128"
-      }, {
-        "id" : "129"
-      }, {
-        "id" : "130"
-      }, {
-        "id" : "132"
-      }, {
-        "id" : "134"
-      }, {
-        "id" : "136"
-      }, {
-        "id" : "138"
       } ]
     } ]
   }

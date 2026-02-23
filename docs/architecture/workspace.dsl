@@ -1,4 +1,5 @@
 workspace "add-ai" "Architecture documentation and C4 model. Source: Business Architecture (Confluence G). L1/L2 from PlantUML." {
+    !impliedRelationships false
 
     model {
         platformAdmin = person "Platform Admin" "Manages platform."
@@ -135,6 +136,11 @@ workspace "add-ai" "Architecture documentation and C4 model. Source: Business Ar
 
         main -> extDns "Uses" "HTTPS"
         main -> extCs "Uses" "API"
+        main -> extGames "Uses" "API"
+        main -> extPay "Uses" "API"
+        main -> extKyc "Uses" "API"
+        main -> extAml "Uses" "API"
+        main -> extFraud "Uses" "API"
         platformInfra -> extSecrets "Uses" "API"
         platformInfra -> extContainerRegistry "Uses" "API"
         platformInfra -> extRegistry "Uses" "API"
