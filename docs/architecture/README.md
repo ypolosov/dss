@@ -1,6 +1,6 @@
 # Architecture Documentation
 
-## GT Platform - Architecture
+## DSS API - Architecture
 
 This directory contains architecture documentation following the ADD 3.0 methodology.
 

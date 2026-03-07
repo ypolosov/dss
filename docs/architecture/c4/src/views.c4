@@ -1,10 +1,13 @@
 views {
-  view systemContext of gtPlatform {
-    title "GT Platform - System Context"
+  view systemContext of dss {
+    title "DSS - System Context"
     include *
-    include player
-    include operator
-    include paymentProvider
-    include gameProvider
+    include architect
+    include developer
+    include discord
+    include confluence
+    include jira
+    include llmProvider
+    include vectorDb
   }
 }

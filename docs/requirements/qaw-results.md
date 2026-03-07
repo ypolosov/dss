@@ -1,6 +1,6 @@
 # QAW Session Results
 
-> Quality Attribute Workshop results for the GT Platform.
+> Quality Attribute Workshop results for the DSS API.
 
 ## Sessions
 

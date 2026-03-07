@@ -1,6 +1,6 @@
 # Requirements: Utility Tree
 
-> Master utility tree for the GT Platform. This is the detailed version maintained by the BA role.
+> Master utility tree for the DSS API. This is the detailed version maintained by the BA role.
 > A summary is synced to `docs/architecture/utility-tree.md` for the SA role.
 
 ## Quality Attribute Utility Tree

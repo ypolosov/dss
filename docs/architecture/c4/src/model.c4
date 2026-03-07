@@ -1,32 +1,50 @@
 model {
   // Actors
-  player = person "Player" {
-    description "End user placing bets and playing games"
+  architect = person "Architect" {
+    description "Uses DSS for architecture decisions"
   }
 
-  operator = person "Operator" {
-    description "Platform operator managing games and settings"
+  developer = person "Developer" {
+    description "Queries knowledge base"
   }
 
-  // GT Platform
-  gtPlatform = softwareSystem "GT Platform" {
-    description "Online gambling platform (casino + sports betting)"
+  // DSS
+  dss = softwareSystem "DSS" {
+    description "Decision Support System — RAG-powered architecture knowledge API"
 
-    // Containers will be added during ADD iterations
+    // Containers (to be detailed in iterations)
+    // api = container "DSS API" - NestJS + Mastra
+    // ragPipeline = container "RAG Pipeline" - embedding & retrieval
+    // discordBot = container "Discord Bot" - team interaction
   }
 
-  // External Systems (to be refined)
-  paymentProvider = externalSystem "Payment Provider" {
-    description "Third-party payment processing"
+  // External Systems
+  discord = externalSystem "Discord" {
+    description "Source of team discussions"
   }
 
-  gameProvider = externalSystem "Game Provider" {
-    description "Third-party game content providers"
+  confluence = externalSystem "Confluence" {
+    description "Documentation source"
+  }
+
+  jira = externalSystem "Jira" {
+    description "Project management source"
+  }
+
+  llmProvider = externalSystem "LLM Provider" {
+    description "Claude API (Anthropic)"
+  }
+
+  vectorDb = database "PostgreSQL + pgvector" {
+    description "Vector storage for embeddings"
   }
 
   // System Context Relationships
-  player -> gtPlatform "Uses" { style sync }
-  operator -> gtPlatform "Manages" { style sync }
-  gtPlatform -> paymentProvider "Processes payments" { style sync }
-  gtPlatform -> gameProvider "Integrates games" { style sync }
+  architect -> dss "Queries architecture knowledge" { style sync }
+  developer -> dss "Searches decisions & patterns" { style sync }
+  dss -> discord "Ingests discussions" { style async }
+  dss -> confluence "Ingests documentation" { style async }
+  dss -> jira "Ingests issues & tasks" { style async }
+  dss -> llmProvider "Generates embeddings & responses" { style sync }
+  dss -> vectorDb "Stores/retrieves vectors" { style sync }
 }
