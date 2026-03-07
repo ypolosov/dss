@@ -1,0 +1,14 @@
+{
+  "name": "gt-architecture-c4",
+  "version": "0.1.0",
+  "private": true,
+  "description": "GT Platform C4 architecture diagrams using LikeC4",
+  "scripts": {
+    "dev": "likec4 serve",
+    "build": "likec4 build",
+    "export": "likec4 export png"
+  },
+  "devDependencies": {
+    "likec4": "^1.0.0"
+  }
+}

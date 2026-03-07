@@ -1,0 +1,32 @@
+model {
+  // Actors
+  player = person "Player" {
+    description "End user placing bets and playing games"
+  }
+
+  operator = person "Operator" {
+    description "Platform operator managing games and settings"
+  }
+
+  // GT Platform
+  gtPlatform = softwareSystem "GT Platform" {
+    description "Online gambling platform (casino + sports betting)"
+
+    // Containers will be added during ADD iterations
+  }
+
+  // External Systems (to be refined)
+  paymentProvider = externalSystem "Payment Provider" {
+    description "Third-party payment processing"
+  }
+
+  gameProvider = externalSystem "Game Provider" {
+    description "Third-party game content providers"
+  }
+
+  // System Context Relationships
+  player -> gtPlatform "Uses" { style sync }
+  operator -> gtPlatform "Manages" { style sync }
+  gtPlatform -> paymentProvider "Processes payments" { style sync }
+  gtPlatform -> gameProvider "Integrates games" { style sync }
+}

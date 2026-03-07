@@ -1,0 +1,10 @@
+views {
+  view systemContext of gtPlatform {
+    title "GT Platform - System Context"
+    include *
+    include player
+    include operator
+    include paymentProvider
+    include gameProvider
+  }
+}

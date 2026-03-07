@@ -1,0 +1,78 @@
+specification {
+  element person {
+    style {
+      shape person
+      color amber
+    }
+  }
+
+  element softwareSystem {
+    style {
+      shape rectangle
+      color blue
+    }
+  }
+
+  element externalSystem {
+    style {
+      shape rectangle
+      color slate
+    }
+  }
+
+  element container {
+    style {
+      shape rectangle
+      color green
+    }
+  }
+
+  element component {
+    style {
+      shape rectangle
+      color sky
+    }
+  }
+
+  element database {
+    style {
+      shape storage
+      color red
+    }
+  }
+
+  element queue {
+    style {
+      shape queue
+      color purple
+    }
+  }
+
+  relationship sync {
+    style {
+      line solid
+      color blue
+    }
+  }
+
+  relationship async {
+    style {
+      line dashed
+      color gray
+    }
+  }
+
+  relationship reads {
+    style {
+      line solid
+      color green
+    }
+  }
+
+  relationship writes {
+    style {
+      line solid
+      color red
+    }
+  }
+}
