@@ -1,4 +1,5 @@
 import swc from 'unplugin-swc';
+import { loadEnv } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -10,5 +11,6 @@ export default defineConfig({
     testTimeout: 90_000,
     hookTimeout: 60_000,
     sequence: { concurrent: false },
+    env: loadEnv('test', process.cwd(), ''),
   },
 });

@@ -1,27 +1,21 @@
-/**
- * E2E smoke tests — real LLM call.
- *
- * Default model: openai/gpt-4.1-mini (~$0.001 per full test suite run)
- * Override via DSS_MODEL env var, e.g.:
- *   DSS_MODEL="openrouter/meta-llama/llama-3.3-70b-instruct:free" npx vitest run --config vitest.e2e.config.ts
- *
- * Requires at least one API key: OPENAI_API_KEY, ANTHROPIC_API_KEY, or OPENROUTER_API_KEY
- */
+
 import 'reflect-metadata';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, type INestApplication } from '@nestjs/common';
 import { AppModule } from '../app.module.js';
 
-const E2E_MODEL = process.env['DSS_MODEL'] ?? 'openai/gpt-4.1-mini';
-const HAS_API_KEY = !!process.env['OPENROUTER_API_KEY'] || !!process.env['OPENAI_API_KEY'] || !!process.env['ANTHROPIC_API_KEY'];
+interface ChatResponse {
+  text: string;
+  threadId: string;
+  agentId: string;
+}
 
-describe.skipIf(!HAS_API_KEY)('Chat E2E (real LLM)', () => {
+describe('Chat E2E (real LLM)', () => {
   let app: INestApplication;
   let baseUrl: string;
 
   beforeAll(async () => {
-    process.env['DSS_MODEL'] = E2E_MODEL;
 
     app = await NestFactory.create(AppModule, { logger: false });
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
@@ -71,7 +65,7 @@ describe.skipIf(!HAS_API_KEY)('Chat E2E (real LLM)', () => {
       });
 
       expect(res.status).toBe(201);
-      const body = await res.json();
+      const body = (await res.json()) as ChatResponse;
 
       expect(body.agentId).toBe('sa-agent');
       expect(body.threadId).toBeTruthy();
@@ -98,7 +92,7 @@ describe.skipIf(!HAS_API_KEY)('Chat E2E (real LLM)', () => {
       });
 
       expect(res.status).toBe(201);
-      const body = await res.json();
+      const body = (await res.json()) as ChatResponse;
 
       expect(body.text).toBeTruthy();
       expect(body.text.length).toBeGreaterThan(30);
@@ -116,7 +110,7 @@ describe.skipIf(!HAS_API_KEY)('Chat E2E (real LLM)', () => {
       });
 
       expect(res.status).toBe(201);
-      const body = await res.json();
+      const body = (await res.json()) as ChatResponse;
 
       expect(body.threadId).toBeTruthy();
       expect(body.text).toBeTruthy();
@@ -133,7 +127,7 @@ describe.skipIf(!HAS_API_KEY)('Chat E2E (real LLM)', () => {
       });
 
       expect(res.status).toBe(201);
-      const body = await res.json();
+      const body = (await res.json()) as ChatResponse;
 
       expect(body.text).toBeTruthy();
       // Should politely decline or explain scope limitation
