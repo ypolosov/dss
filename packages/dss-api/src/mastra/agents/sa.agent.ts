@@ -1,7 +1,7 @@
 import { Agent } from '@mastra/core/agent';
 import { ragQueryTool } from '../tools/index.js';
 
-const MODEL = (process.env['DSS_MODEL'] ?? 'anthropic/claude-sonnet-4-5') as any;
+const MODEL = (process.env['DSS_MODEL'] ?? 'openai/gpt-4.1-mini') as any;
 
 export const saAgent = new Agent({
   id: 'sa-agent',

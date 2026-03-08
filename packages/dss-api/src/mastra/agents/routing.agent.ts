@@ -3,7 +3,7 @@ import { createMemory } from '../memory/index.js';
 import { ragQueryTool } from '../tools/index.js';
 import { saAgent } from './sa.agent.js';
 
-const MODEL = (process.env['DSS_MODEL'] ?? 'anthropic/claude-sonnet-4-5') as any;
+const MODEL = (process.env['DSS_MODEL'] ?? 'openai/gpt-4.1-mini') as any;
 
 export const routingAgent = new Agent({
   id: 'routing-agent',
