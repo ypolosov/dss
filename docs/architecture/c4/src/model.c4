@@ -8,14 +8,47 @@ model {
     description "Queries knowledge base"
   }
 
+  ba = person "Business Analyst" {
+    description "Uses DSS for requirements support"
+  }
+
+  pm = person "Project Manager" {
+    description "Uses DSS for project management"
+  }
+
   // DSS
   dss = softwareSystem "DSS" {
     description "Decision Support System — RAG-powered architecture knowledge API"
 
-    // Containers (to be detailed in iterations)
-    // api = container "DSS API" - NestJS + Mastra
-    // ragPipeline = container "RAG Pipeline" - embedding & retrieval
-    // discordBot = container "Discord Bot" - team interaction
+    apiGateway = container "API Gateway" {
+      description "NestJS HTTP server — auth, routing, request orchestration"
+      technology "NestJS, TypeScript"
+    }
+
+    agentOrchestrator = container "Agent Orchestrator" {
+      description "Mastra runtime — agent registry, intent routing, tool management"
+      technology "Mastra, TypeScript"
+    }
+
+    ragEngine = container "RAG Engine" {
+      description "Embedding generation, vector search, context assembly"
+      technology "Mastra RAG, pgvector"
+    }
+
+    ingestionPipeline = container "Ingestion Pipeline" {
+      description "Scheduled crawling & indexing from knowledge sources"
+      technology "NestJS, Mastra Syncs"
+    }
+
+    discordBot = container "Discord Bot" {
+      description "Channel adapter — Discord interaction"
+      technology "Discord.js"
+    }
+
+    mcpServer = container "MCP Server" {
+      description "Channel adapter — MCP protocol for Claude Code and other MCP clients"
+      technology "MCP SDK, SSE/stdio"
+    }
   }
 
   // External Systems
@@ -31,20 +64,55 @@ model {
     description "Project management source"
   }
 
+  bitbucket = externalSystem "Bitbucket" {
+    description "Source code repository"
+  }
+
   llmProvider = externalSystem "LLM Provider" {
     description "Claude API (Anthropic)"
   }
 
   vectorDb = database "PostgreSQL + pgvector" {
-    description "Vector storage for embeddings"
+    description "Vector storage for embeddings, agent state, metadata"
   }
 
-  // System Context Relationships
-  architect -> dss "Queries architecture knowledge" { style sync }
-  developer -> dss "Searches decisions & patterns" { style sync }
-  dss -> discord "Ingests discussions" { style async }
-  dss -> confluence "Ingests documentation" { style async }
-  dss -> jira "Ingests issues & tasks" { style async }
-  dss -> llmProvider "Generates embeddings & responses" { style sync }
-  dss -> vectorDb "Stores/retrieves vectors" { style sync }
+  // ── System Context Relationships ──
+
+  architect .sync dss "Queries architecture knowledge"
+  developer .sync dss "Searches decisions & patterns"
+  ba .sync dss "Requirements elicitation"
+  pm .sync dss "Project management support"
+
+  dss .async discord "Ingests discussions"
+  dss .async confluence "Ingests documentation"
+  dss .async jira "Ingests issues & tasks"
+  dss .async bitbucket "Ingests source code"
+  dss .sync llmProvider "Generates embeddings & responses"
+  dss .sync vectorDb "Stores/retrieves vectors"
+
+  // ── Container Relationships ──
+
+  // Inbound: Channels → API Gateway
+  discordBot .sync apiGateway "Forwards user messages"
+  mcpServer .sync apiGateway "Forwards MCP requests"
+
+  // Core: API Gateway → Agent Orchestrator → RAG Engine
+  apiGateway .sync agentOrchestrator "Routes to agents"
+  agentOrchestrator .sync ragEngine "Retrieves context"
+  agentOrchestrator .sync llmProvider "Agent LLM calls"
+
+  // RAG Engine → Storage
+  ragEngine .reads vectorDb "Vector search & retrieval"
+  ragEngine .sync llmProvider "Embedding generation"
+
+  // Ingestion: Pipeline → Sources & Storage
+  ingestionPipeline .async discord "Crawls messages"
+  ingestionPipeline .async confluence "Crawls pages"
+  ingestionPipeline .async jira "Crawls issues"
+  ingestionPipeline .async bitbucket "Crawls repositories"
+  ingestionPipeline .sync ragEngine "Sends documents for embedding"
+  ingestionPipeline .writes vectorDb "Stores metadata & vectors"
+
+  // Channel adapters → External
+  discordBot .sync discord "Listens & sends messages"
 }

@@ -1,12 +1,28 @@
 views {
   view systemContext of dss {
-    title "DSS - System Context"
+    title "DSS — System Context"
+    include *
+    include architect
+    include developer
+    include ba
+    include pm
+    include discord
+    include confluence
+    include jira
+    include bitbucket
+    include llmProvider
+    include vectorDb
+  }
+
+  view containers of dss {
+    title "DSS — Container Diagram"
     include *
     include architect
     include developer
     include discord
     include confluence
     include jira
+    include bitbucket
     include llmProvider
     include vectorDb
   }

@@ -1,0 +1,20 @@
+{
+    "$schema": "https://likec4.dev/schemas/config.json",
+    "name": "dss",
+    "title": "DSS API C4 architecture diagrams using LikeC4",
+    "metadata": {
+      "owner": "ypolosov",
+      "domain": "ai-tools"
+    },
+    "implicitViews": false,
+    "styles": {
+      "theme": {},
+      "defaults": {
+        "relationship": {
+          "color": "gray",
+          "line": "solid"
+        }
+      }
+    }
+  }
+  

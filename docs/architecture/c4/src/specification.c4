@@ -41,38 +41,23 @@ specification {
     }
   }
 
-  element queue {
-    style {
-      shape queue
-      color purple
-    }
-  }
-
   relationship sync {
-    style {
-      line solid
-      color blue
-    }
+    color blue
+    line solid
   }
 
   relationship async {
-    style {
-      line dashed
-      color gray
-    }
+    color slate
+    line dashed
   }
 
   relationship reads {
-    style {
-      line solid
-      color green
-    }
+    color green
+    line solid
   }
 
   relationship writes {
-    style {
-      line solid
-      color red
-    }
+    color red
+    line solid
   }
 }

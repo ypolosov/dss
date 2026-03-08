@@ -4,11 +4,17 @@
   "private": true,
   "description": "DSS API C4 architecture diagrams using LikeC4",
   "scripts": {
-    "dev": "likec4 serve",
-    "build": "likec4 build",
-    "export": "likec4 export png"
+    "install-deps": "npx playwright install --with-deps chromium",
+    "likec4": "likec4",
+    "preview": "likec4 preview",
+    "build": "likec4 build --no-use-dot",
+    "gen": "likec4 gen",
+    "start": "likec4 start --no-use-dot",
+    "export": "likec4 export png -o ./out --sequence",
+    "validate": "likec4 validate",
+    "check-update": "likec4 check-update"
   },
   "devDependencies": {
-    "likec4": "^1.0.0"
+    "likec4": "^1.50.0"
   }
 }
