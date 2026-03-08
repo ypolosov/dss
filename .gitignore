@@ -11,6 +11,12 @@ node_modules/
 
 # Build output
 dist/
+*.tsbuildinfo
+
+# SQLite (Mastra memory)
+*.db
+*.db-shm
+*.db-wal
 
 # OS
 .DS_Store
