@@ -26,4 +26,21 @@ views {
     include llmProvider
     include vectorDb
   }
+
+  view agentComponents of dss.agentOrchestrator {
+    title "Agent Orchestrator — Component Diagram"
+    include *
+    include dss.apiGateway
+    include dss.ragEngine
+    include llmProvider
+    include vectorDb
+  }
+
+  view ragComponents of dss.ragEngine {
+    title "RAG Engine — Component Diagram"
+    include *
+    include llmProvider
+    include vectorDb
+    include dss.ingestionPipeline
+  }
 }

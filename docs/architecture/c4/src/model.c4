@@ -28,11 +28,61 @@ model {
     agentOrchestrator = container "Agent Orchestrator" {
       description "Mastra runtime — agent registry, intent routing, tool management"
       technology "Mastra, TypeScript"
+
+      routingAgent = component "Routing Agent" {
+        description "Top-level Mastra Agent — intent classification, delegation to sub-agents"
+        technology "Mastra Agent"
+      }
+
+      agentRegistry = component "Agent Registry" {
+        description "Registration and discovery of specialized agents"
+        technology "Mastra Agent Network"
+      }
+
+      toolRegistry = component "Tool Registry" {
+        description "Shared and per-agent tools (Jira, Confluence, Bitbucket, K8s)"
+        technology "Mastra Tools, Zod"
+      }
+
+      memoryManager = component "Memory Manager" {
+        description "Session state, working memory, semantic recall across conversations"
+        technology "Mastra Memory, LibSQL/PostgreSQL"
+      }
+
+      specializedAgents = component "Specialized Agents" {
+        description "SA, BA, PM, Dev, Tester, Reviewer, Frontend, DevOps agents"
+        technology "Mastra Agent"
+      }
     }
 
     ragEngine = container "RAG Engine" {
       description "Embedding generation, vector search, context assembly"
       technology "Mastra RAG, pgvector"
+
+      documentProcessor = component "Document Processor" {
+        description "Document initialization and chunking (recursive, 512 tokens, overlap 50)"
+        technology "Mastra MDocument"
+      }
+
+      embeddingService = component "Embedding Service" {
+        description "Generates embeddings for documents and queries"
+        technology "Mastra ModelRouterEmbeddingModel"
+      }
+
+      vectorStoreClient = component "Vector Store Client" {
+        description "PgVector wrapper — upsert, query, delete operations"
+        technology "Mastra PgVector"
+      }
+
+      retrievalService = component "Retrieval Service" {
+        description "Query embedding → vector search (topK) → ranked results"
+        technology "Mastra RAG"
+      }
+
+      contextAssembler = component "Context Assembler" {
+        description "Formats retrieved chunks into LLM-ready context with source references"
+        technology "TypeScript"
+      }
     }
 
     ingestionPipeline = container "Ingestion Pipeline" {
@@ -115,4 +165,23 @@ model {
 
   // Channel adapters → External
   discordBot .sync discord "Listens & sends messages"
+
+  // ── Agent Orchestrator Component Relationships ──
+
+  routingAgent .sync agentRegistry "Discovers available agents"
+  routingAgent .sync specializedAgents "Delegates tasks"
+  specializedAgents .sync toolRegistry "Uses tools"
+  specializedAgents .sync ragEngine "Retrieves RAG context"
+  routingAgent .sync memoryManager "Reads/writes session state"
+  specializedAgents .sync memoryManager "Reads/writes working memory"
+  agentRegistry .sync specializedAgents "Registers agents"
+
+  // ── RAG Engine Component Relationships ──
+
+  retrievalService .sync embeddingService "Embeds query"
+  retrievalService .sync vectorStoreClient "Vector search"
+  retrievalService .sync contextAssembler "Assembles context"
+  documentProcessor .sync embeddingService "Embeds chunks"
+  embeddingService .sync llmProvider "Embedding API calls"
+  vectorStoreClient .sync vectorDb "pgvector operations"
 }
