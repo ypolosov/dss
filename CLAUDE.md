@@ -4,6 +4,23 @@
 
 NestJS + Mastra API with Discord bot and RAG pipeline. Provides architecture knowledge retrieval as RAG-MCP backend for the add-ai toolkit.
 
+## Creation Chain Context
+
+DSS serves as the knowledge layer in a creation chain — a sequence of creating
+systems where each creates value for the next.
+
+- DSS architecture was designed using architecture-driven design methodology (ADD 3.0)
+- When MCP server is implemented, DSS provides project knowledge retrieval capabilities
+  to any upstream creating system or target project
+- First-principles thinking capabilities can be applied to analyze DSS architecture
+
+### MCP Server Contract (future)
+When implemented, DSS MCP server will provide knowledge retrieval tools:
+- Architecture decision search (ADRs, design decisions, rationale)
+- Pattern and tactics retrieval
+- Domain knowledge queries
+Target projects register DSS in `.mcp.json` to enable knowledge retrieval.
+
 ## Tech Stack
 
 - **Runtime**: Node.js, TypeScript
