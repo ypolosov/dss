@@ -1,5 +1,6 @@
 import { Agent } from '@mastra/core/agent';
 import { ragQueryTool } from '../tools/index.js';
+import { LLM_CONFIG } from './llm-config.js';
 
 const MODEL = (process.env['DSS_MODEL'] ?? 'openai/gpt-4.1-mini') as any;
 
@@ -26,4 +27,7 @@ export const saAgent = new Agent({
 - Качественные атрибуты и архитектурные драйверы`,
   model: MODEL,
   tools: { ragQueryTool },
+  // QA-006: Fault tolerance — retry on transient LLM failures (429, 500, 503)
+  // Uses AI SDK exponential backoff under the hood
+  maxRetries: LLM_CONFIG.maxRetries,
 });

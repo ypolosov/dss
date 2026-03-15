@@ -1,6 +1,6 @@
 {
   "name": "@dss/api",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -23,6 +23,7 @@
     "@mastra/libsql": "^1.6.0",
     "@mastra/memory": "^1.6.0",
     "@mastra/rag": "^2.1.2",
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "@nestjs/common": "^11.0.0",
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",

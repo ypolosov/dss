@@ -2,6 +2,7 @@ import { Agent } from '@mastra/core/agent';
 import { createMemory } from '../memory/index.js';
 import { ragQueryTool } from '../tools/index.js';
 import { saAgent } from './sa.agent.js';
+import { LLM_CONFIG } from './llm-config.js';
 
 const MODEL = (process.env['DSS_MODEL'] ?? 'openai/gpt-4.1-mini') as any;
 
@@ -25,4 +26,7 @@ export const routingAgent = new Agent({
   agents: { saAgent },
   tools: { ragQueryTool },
   memory: createMemory(),
+  // QA-006: Fault tolerance — retry on transient LLM failures (429, 500, 503)
+  // Uses AI SDK exponential backoff under the hood
+  maxRetries: LLM_CONFIG.maxRetries,
 });
