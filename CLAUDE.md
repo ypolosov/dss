@@ -81,6 +81,26 @@ gh issue list                                    # List issues
 gh issue create --title "..." --body "..."       # Create issue
 ```
 
+## Project Ecosystem
+
+- DSS is a universal RAG system; this is the first target project using it
+- DSS knows about add-ai (ADD 3.0 methodology) and fpf-ai (first-principles thinking)
+- DSS does not reference other target projects outside its known ecosystem
+- Architecture was designed using ADD 3.0 (via add-ai plugin)
+- During DSS sessions, add-ai and/or fpf-ai plugins may be loaded
+
+## Diagramming
+
+- This project uses LikeC4 for C4 diagrams
+- Diagram source files: `docs/architecture/c4/src/`
+- Validation: `cd docs/architecture/c4 && npx likec4 validate`
+- Never generate Mermaid or PlantUML syntax
+
+## Validation Rules
+
+- Before referencing a C4 element — verify it exists in `docs/architecture/c4/src/model.c4`
+- Before cross-referencing an artifact (UC-NNN, QA-NNN, ADR-NNNN) — verify the file exists in the corresponding directory
+
 ## MCP Servers
 
 Configured in `.mcp.json`:
