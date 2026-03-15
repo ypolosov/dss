@@ -13,6 +13,8 @@ systems where each creates value for the next.
 - When MCP server is implemented, DSS provides project knowledge retrieval capabilities
   to any upstream creating system or target project
 - First-principles thinking capabilities can be applied to analyze DSS architecture
+- Recursive loop: DSS can feed knowledge back to methodology tools (add-ai, fpf-ai),
+  enabling them to make better-informed design decisions about DSS itself
 
 ### MCP Server Contract (future)
 When implemented, DSS MCP server will provide knowledge retrieval tools:
