@@ -17,6 +17,7 @@
 - [x] **Container Decomposition** — Hexagonal + Mastra Agents → [ADR-0001](adrs/0001-container-decomposition.md) (ITER-01)
 - [x] **Agent Orchestration** — Mastra Agent Network → [ADR-0002](adrs/0002-agent-orchestration-mastra-network.md) (ITER-02)
 - [x] **RAG Engine Pipeline** — Mastra RAG → [ADR-0003](adrs/0003-rag-engine-retrieval-pipeline.md) (ITER-02)
+- [x] **Vector Store — LibSQL for Dev** — LibSQLVector dev / PgVector prod → [ADR-0004](adrs/0004-vector-store-libsql-for-development.md) (ITER-02, amends ADR-0003)
 
 ## Implemented
 

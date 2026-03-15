@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted
+Accepted, amended by [ADR-0004](0004-vector-store-libsql-for-development.md)
 
 ## Date
 
@@ -101,4 +101,5 @@ Chosen option: "Mastra RAG Pipeline", because it aligns with the Mastra tech sta
 
 - Iteration: ITER-02
 - Related: [ADR-0001](0001-container-decomposition.md), [ADR-0002](0002-agent-orchestration-mastra-network.md)
+- Amended by: [ADR-0004](0004-vector-store-libsql-for-development.md) — Vector Store Client supports LibSQLVector (dev) and PgVector (prod)
 - Mastra docs: RAG Overview, Chunking and Embedding, Retrieval

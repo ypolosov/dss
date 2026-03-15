@@ -57,7 +57,7 @@ model {
 
     ragEngine = container "RAG Engine" {
       description "Embedding generation, vector search, context assembly"
-      technology "Mastra RAG, pgvector"
+      technology "Mastra RAG, LibSQL/pgvector"
 
       documentProcessor = component "Document Processor" {
         description "Document initialization and chunking (recursive, 512 tokens, overlap 50)"
@@ -70,8 +70,8 @@ model {
       }
 
       vectorStoreClient = component "Vector Store Client" {
-        description "PgVector wrapper — upsert, query, delete operations"
-        technology "Mastra PgVector"
+        description "MastraVector abstraction — upsert, query, delete (LibSQL dev / PgVector prod)"
+        technology "Mastra LibSQLVector / PgVector"
       }
 
       retrievalService = component "Retrieval Service" {
@@ -122,8 +122,8 @@ model {
     description "Claude API (Anthropic)"
   }
 
-  vectorDb = database "PostgreSQL + pgvector" {
-    description "Vector storage for embeddings, agent state, metadata"
+  vectorDb = database "Vector Database" {
+    description "LibSQL (dev) / PostgreSQL + pgvector (prod) — vector storage for embeddings"
   }
 
   // ── System Context Relationships ──
@@ -183,5 +183,5 @@ model {
   retrievalService .sync contextAssembler "Assembles context"
   documentProcessor .sync embeddingService "Embeds chunks"
   embeddingService .sync llmProvider "Embedding API calls"
-  vectorStoreClient .sync vectorDb "pgvector operations"
+  vectorStoreClient .sync vectorDb "Vector operations"
 }

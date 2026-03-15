@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { MDocument } from '@mastra/rag';
 import { embedMany } from 'ai';
 import { ModelRouterEmbeddingModel } from '@mastra/core/llm';
-import * as fs from 'node:fs';
+import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { VECTOR_CONFIG } from '../../mastra/vector/config.js';
 import { MastraService } from '../mastra/mastra.service.js';
@@ -11,12 +11,13 @@ import type { IngestionResultDto } from './dto/ingestion-result.dto.js';
 @Injectable()
 export class IngestionService {
   private readonly logger = new Logger(IngestionService.name);
+  private indexEnsured = false;
 
   constructor(private readonly mastraService: MastraService) {}
 
   async ingestDirectory(dirPath: string): Promise<IngestionResultDto> {
     const vectorStore = this.mastraService.getVector('dssVectorStore');
-    const files = this.collectMarkdownFiles(dirPath);
+    const files = await this.collectMarkdownFiles(dirPath);
     let chunksCreated = 0;
     const errors: string[] = [];
 
@@ -26,7 +27,7 @@ export class IngestionService {
 
     for (const filePath of files) {
       try {
-        const content = fs.readFileSync(filePath, 'utf-8');
+        const content = await fs.readFile(filePath, 'utf-8');
         const doc = MDocument.fromMarkdown(content);
         await doc.chunk({
           strategy: 'recursive',
@@ -75,22 +76,24 @@ export class IngestionService {
   private async ensureIndex(
     vectorStore: ReturnType<MastraService['getVector']>,
   ): Promise<void> {
+    if (this.indexEnsured) return;
     await vectorStore.createIndex({
       indexName: VECTOR_CONFIG.indexName,
       dimension: VECTOR_CONFIG.dimension,
       metric: 'cosine',
     });
+    this.indexEnsured = true;
   }
 
-  private collectMarkdownFiles(dirPath: string): string[] {
+  private async collectMarkdownFiles(dirPath: string): Promise<string[]> {
     const results: string[] = [];
-    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+    const entries = await fs.readdir(dirPath, { withFileTypes: true });
 
     for (const entry of entries) {
       const fullPath = path.join(dirPath, entry.name);
       if (entry.isDirectory()) {
         if (['node_modules', 'dist', '.git'].includes(entry.name)) continue;
-        results.push(...this.collectMarkdownFiles(fullPath));
+        results.push(...(await this.collectMarkdownFiles(fullPath)));
       } else if (entry.name.endsWith('.md')) {
         results.push(fullPath);
       }

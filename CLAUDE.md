@@ -81,6 +81,31 @@ gh issue list                                    # List issues
 gh issue create --title "..." --body "..."       # Create issue
 ```
 
+## Development Workflow: Plugin-First Approach
+
+When working on DSS, ALWAYS use add-ai and fpf-ai plugin skills as primary tools:
+
+### Before implementation
+1. Read relevant ADRs (`docs/architecture/adrs/`) and C4 model (`docs/architecture/c4/src/`)
+2. Use `fpf-ai:fpf-review` or `fpf-ai:fpf-analyze` to validate design approach
+3. Use `add-ai:review-code` scope to understand existing patterns
+
+### During implementation
+- `add-ai:dev-implement` — implement features following ADRs and architecture patterns
+- `add-ai:dev-scaffold` — scaffold new modules with hexagonal architecture
+- `add-ai:sa-adr` — create ADR when making a new architectural decision
+- `add-ai:sa-diagram` — update C4 diagrams when adding containers/components
+- `fpf-ai:fpf-design` — design new subsystems using first principles
+
+### After implementation
+1. `add-ai:review-code` — verify implementation against ADRs and patterns
+2. `add-ai:nav-consistency` — check cross-artifact consistency (C4 refs, artifact IDs)
+3. `fpf-ai:fpf-review` — check boundary discipline and composition correctness
+4. Update C4 model if new components were added
+
+### Key principle
+Architecture artifacts (`docs/architecture/`) are the source of truth for design decisions. Code must follow them. If code needs to diverge — create or update an ADR first, then implement.
+
 ## Project Ecosystem
 
 - DSS is a universal RAG system; this is the first target project using it
