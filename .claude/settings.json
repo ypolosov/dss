@@ -1,0 +1,33 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=\"$TOOL_INPUT_file_path\"; if echo \"$file\" | grep -qE '\\.ts$'; then cd packages/dss-api && npx prettier --write \"$file\" 2>/dev/null && npx eslint --fix \"$file\" 2>/dev/null; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=\"$TOOL_INPUT_file_path\"; if echo \"$file\" | grep -qE '\\.(c4|likec4)$'; then cd docs/architecture/c4 && npx likec4 validate 2>&1; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=\"$TOOL_INPUT_file_path\"; if echo \"$file\" | grep -qE '\\.spec\\.ts$'; then cd packages/dss-api && npx vitest run \"$file\" --reporter=verbose 2>&1; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
