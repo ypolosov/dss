@@ -12,10 +12,9 @@
     "forceConsistentCasingInFileNames": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "declaration": true,
+    "declaration": false,
     "removeComments": true,
     "sourceMap": true,
-    "incremental": true,
     "resolveJsonModule": true,
     "isolatedModules": true
   },

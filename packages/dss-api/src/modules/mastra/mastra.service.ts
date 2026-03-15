@@ -18,4 +18,8 @@ export class MastraService implements OnModuleInit {
   getAgent(id: string): Agent {
     return this.mastraInstance.getAgentById(id);
   }
+
+  getVector(name: string) {
+    return this.mastraInstance.getVector(name);
+  }
 }
